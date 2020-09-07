@@ -143,9 +143,11 @@ struct CardView<Content> : View where Content : View {
         
         return ZStack {
             //Group {
-                //ScrollView {
+                //
+            ZStack {
+                ScrollView {
                     content
-                
+                }
                 
                     //                            .introspectScrollView { scrollView in
                     //                            scrollView.isScrollEnabled = shouldScroll
@@ -166,8 +168,22 @@ struct CardView<Content> : View where Content : View {
                 //                    }
                 //}
             //}
+            }.offset(y:  offs.height-30)
             
         }
+        .simultaneousGesture(DragGesture(minimumDistance: 0).onChanged{gesture in
+            print(gesture.translation)
+            self.offs = CGSize(width: gesture.location.x, height: gesture.location.y)
+            if self.offs.height - 30 < 0 {
+                self.offs.height = 30
+            }
+            //self.dragAmount = gesture.translation
+        }, including: .all)
+        
+    //.gesture(DragGesture(minimumDistance: 0))
+    //.highPriorityGesture(DragGesture(minimumDistance: 0))
+    
+        /*
         .highPriorityGesture(DragGesture(minimumDistance: 0)
 //                    .updating($offs, body: { (drag, state, transaction) in
 //                        print(drag.translation)
@@ -176,12 +192,15 @@ struct CardView<Content> : View where Content : View {
 //                    })
                     .onChanged{gesture in
                         print(gesture.translation)
-                        self.offs = CGSize(width: 0, height: gesture.location.y)
+                        self.offs = CGSize(width: gesture.location.x, height: gesture.location.y)
+                        if self.offs.height - 30 < 0 {
+                            self.offs.height = 0
+                        }
                         //self.dragAmount = gesture.translation
                     }
                     
             )
-        .offset(y:  offs.height)
+        */
            // .frame(maxHeight: offs.height/*, alignment: .bottom*/)
             //.offset(offs)
         }
