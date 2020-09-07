@@ -86,10 +86,6 @@ struct V5: View {
     }
 }
 
-protocol CardView: View {
-    
-}
-
 struct BlockingCard: View {
     let contentView: AnyView
     @State private var offset = CGSize.zero
@@ -107,19 +103,20 @@ struct BlockingCard: View {
                         .padding(.bottom, 0)
                         .offset(x: 0, y: self.point.y)
                         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 55)
-                        //.offset(y: 150)
-                        .gesture(
-                            DragGesture()
-                                .onChanged { gesture in
-                                    self.offset = gesture.translation
-                                    self.point = gesture.location
-                                    
-                                }
-
-                                .onEnded { _ in
-                                        print ("ended")
-                                }
-                        )
+                        .background(Color.white.offset(x: 0, y: self.point.y).edgesIgnoringSafeArea(.all))
+//                        .gesture(
+//                            DragGesture()
+//                                .onChanged { gesture in
+//                                    self.offset = gesture.translation
+//
+//                                    self.point = gesture.startLocation
+//                                    self.point.y += gesture.translation.height
+//                                }
+//
+//                                .onEnded { _ in
+//                                        print ("ended")
+//                                }
+//                        )
                 }
                 //.frame(minWidth: .infinity, maxWidth: .infinity, minHeight: 55,maxHeight: .infinity)
             }
@@ -128,6 +125,70 @@ struct BlockingCard: View {
         }
     }
 }
+
+
+struct CardView<Content> : View where Content : View {
+    //@GestureState var offs = CGSize(width: 1000, height: 1000)
+    
+    @State var offs = CGSize.zero
+    
+    var content: Content
+    
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+    
+    var body: some View {
+        //return Text("sdf")
+        
+        return ZStack {
+            //Group {
+                //ScrollView {
+                    content
+                
+                
+                    //                            .introspectScrollView { scrollView in
+                    //                            scrollView.isScrollEnabled = shouldScroll
+                    //                        }
+                    
+                    //}
+                   // .offset(offs)
+                    
+                
+                //.offset()
+                
+                
+                //}.frame(minWidth: 300, minHeight: 300)
+                //                        .onTap { o in
+                //                            print(o)
+                
+                
+                //                    }
+                //}
+            //}
+            
+        }
+        .highPriorityGesture(DragGesture(minimumDistance: 0)
+//                    .updating($offs, body: { (drag, state, transaction) in
+//                        print(drag.translation)
+//
+//                        state = drag.translation
+//                    })
+                    .onChanged{gesture in
+                        print(gesture.translation)
+                        self.offs = CGSize(width: 0, height: gesture.location.y)
+                        //self.dragAmount = gesture.translation
+                    }
+                    
+            )
+        .offset(y:  offs.height)
+           // .frame(maxHeight: offs.height/*, alignment: .bottom*/)
+            //.offset(offs)
+        }
+   
+    
+}
+
 
 struct BottomNavigationView: View {
     
@@ -142,12 +203,69 @@ struct BottomNavigationView: View {
     
     @State private var cardView: AnyView?
     @State private var contentView: AnyView?
+    @State private var c: GestureState<Any>?
+    
+    //@Binding var shouldScroll: Bool
+
+    
+    //@Binding var shouldScroll: Bool
+    
+    //@State private var
+    
+    @GestureState var dragAmount = CGSize.zero
     
     var body: some View {
+        
+        
         ZStack {
             VStack {
                 
+                ZStack {
                     contentView
+                    
+                    
+                    
+               /*     //ScrollView {
+                        List {
+                            ForEach(1...100, id:\.self) { i  in
+                                Text("element \(i)")
+                            }//.gesture(DragGesture())
+                            
+                        }
+                        //.moveDisabled(true)
+                        .offset()
+                        .highPriorityGesture(
+                            DragGesture(minimumDistance: 100)
+                                .onChanged { gesture in
+                                    print(gesture.translation)
+                                }
+
+                                .onEnded { _ in
+                                        print ("ended")
+                                }
+                        
+                    )
+                    */
+                    
+                    
+                    // {
+                    
+                    
+                    CardView {
+                        Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
+                    }
+                }
+//            .simultaneousGesture(<#T##gesture: Gesture##Gesture#>, including: <#T##GestureMask#>)
+//                .simultaneousGesture(
+//                    DragGesture(minimumDistance: 0).updating($dragAmount) { value, state, transaction in
+//                        print("changed \(value)")
+////                        var frame = value.translation
+////                        frame.width = 0
+////                        state = frame
+//                        
+//                    }
+//                )
+            
 
                 Spacer(minLength: 0)
                 VStack(alignment: .center, spacing: 0) {
@@ -157,7 +275,7 @@ struct BottomNavigationView: View {
                         BottomTabButton(title: "Map", iconName: "ic_map_bottom_navigation", action: {
                             self.contentView = AnyView(V1())
                             
-                            self.show(view: AnyView(Text("OK")))
+                            //self.show(view: AnyView(Text("OK")))
                         })
                         BottomTabButton(title: "Sessions", iconName: "ic_sessions_bottom_navigation", action: {
                             self.contentView = AnyView(V2())
