@@ -3,7 +3,7 @@
 //  App framework
 //
 //  Created by Artur Gurgul on 31/08/2020.
-//  Copyright © 2020 Artur Gurgul. All rights reserved.
+//  Copyright © 2020 Winux-ORG. All rights reserved.
 //
 
 import UIKit

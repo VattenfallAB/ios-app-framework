@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7506477F250B5C1D006349F1 /* OldCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7506477E250B5C1D006349F1 /* OldCardView.swift */; };
+		75194BEF250A94400049B334 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75194BEE250A94400049B334 /* RootViewController.swift */; };
 		75AD357A24FD134A00E7D76D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AD357924FD134A00E7D76D /* AppDelegate.swift */; };
 		75AD357C24FD134A00E7D76D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AD357B24FD134A00E7D76D /* SceneDelegate.swift */; };
 		75AD357E24FD134A00E7D76D /* BottomNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AD357D24FD134A00E7D76D /* BottomNavigationView.swift */; };
@@ -14,9 +16,15 @@
 		75AD358324FD134E00E7D76D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75AD358224FD134E00E7D76D /* Preview Assets.xcassets */; };
 		75AD358624FD134E00E7D76D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75AD358424FD134E00E7D76D /* LaunchScreen.storyboard */; };
 		75EDA42A24FF9514003DFD8C /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EDA42924FF9514003DFD8C /* MapView.swift */; };
+		75F688F0250763C900E53566 /* BottomTabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F688EF250763C900E53566 /* BottomTabButton.swift */; };
+		75F688F22507643A00E53566 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F688F12507643A00E53566 /* CardView.swift */; };
+		75F688F42507649100E53566 /* BlockingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F688F32507649100E53566 /* BlockingCardView.swift */; };
+		75F688F6250764D900E53566 /* DummyTabViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F688F5250764D900E53566 /* DummyTabViews.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7506477E250B5C1D006349F1 /* OldCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldCardView.swift; sourceTree = "<group>"; };
+		75194BEE250A94400049B334 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		75AD357624FD134A00E7D76D /* App framework.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "App framework.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		75AD357924FD134A00E7D76D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75AD357B24FD134A00E7D76D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -26,6 +34,10 @@
 		75AD358524FD134E00E7D76D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		75AD358724FD134E00E7D76D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		75EDA42924FF9514003DFD8C /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		75F688EF250763C900E53566 /* BottomTabButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomTabButton.swift; sourceTree = "<group>"; };
+		75F688F12507643A00E53566 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		75F688F32507649100E53566 /* BlockingCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockingCardView.swift; sourceTree = "<group>"; };
+		75F688F5250764D900E53566 /* DummyTabViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyTabViews.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,14 +70,16 @@
 		75AD357824FD134A00E7D76D /* App framework */ = {
 			isa = PBXGroup;
 			children = (
+				75194BEE250A94400049B334 /* RootViewController.swift */,
 				75AD358D24FD141100E7D76D /* Views */,
+				75F688F5250764D900E53566 /* DummyTabViews.swift */,
+				75EDA42924FF9514003DFD8C /* MapView.swift */,
 				75AD357924FD134A00E7D76D /* AppDelegate.swift */,
 				75AD357B24FD134A00E7D76D /* SceneDelegate.swift */,
 				75AD357F24FD134E00E7D76D /* Assets.xcassets */,
 				75AD358424FD134E00E7D76D /* LaunchScreen.storyboard */,
 				75AD358724FD134E00E7D76D /* Info.plist */,
 				75AD358124FD134E00E7D76D /* Preview Content */,
-				75EDA42924FF9514003DFD8C /* MapView.swift */,
 			);
 			path = "App framework";
 			sourceTree = "<group>";
@@ -82,6 +96,10 @@
 			isa = PBXGroup;
 			children = (
 				75AD357D24FD134A00E7D76D /* BottomNavigationView.swift */,
+				75F688EF250763C900E53566 /* BottomTabButton.swift */,
+				75F688F12507643A00E53566 /* CardView.swift */,
+				75F688F32507649100E53566 /* BlockingCardView.swift */,
+				7506477E250B5C1D006349F1 /* OldCardView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -158,9 +176,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				75AD357A24FD134A00E7D76D /* AppDelegate.swift in Sources */,
+				75F688F42507649100E53566 /* BlockingCardView.swift in Sources */,
+				75194BEF250A94400049B334 /* RootViewController.swift in Sources */,
 				75EDA42A24FF9514003DFD8C /* MapView.swift in Sources */,
 				75AD357C24FD134A00E7D76D /* SceneDelegate.swift in Sources */,
 				75AD357E24FD134A00E7D76D /* BottomNavigationView.swift in Sources */,
+				75F688F22507643A00E53566 /* CardView.swift in Sources */,
+				75F688F0250763C900E53566 /* BottomTabButton.swift in Sources */,
+				75F688F6250764D900E53566 /* DummyTabViews.swift in Sources */,
+				7506477F250B5C1D006349F1 /* OldCardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,13 +322,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"App framework/Preview Content\"";
+				DEVELOPMENT_TEAM = A24F6VSF5V;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "App framework/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "net.artgur.vfappframework.App-framework";
+				PRODUCT_BUNDLE_IDENTIFIER = com.vattenfall.laddaelbilen.se;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -317,13 +342,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"App framework/Preview Content\"";
+				DEVELOPMENT_TEAM = A24F6VSF5V;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "App framework/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "net.artgur.vfappframework.App-framework";
+				PRODUCT_BUNDLE_IDENTIFIER = com.vattenfall.laddaelbilen.se;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
