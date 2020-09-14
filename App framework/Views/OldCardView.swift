@@ -11,7 +11,7 @@ import UIKit
 import SwiftUI
 
 struct OldCardView<Content>: UIViewRepresentable where Content: View {
-    
+    var param: Int = 30
     var content: Content
     var contentHolder: UIKitCardView<Content>
     
@@ -50,6 +50,15 @@ private extension CALayer {
                 cornerRadius = radius
             }
         }
+    }
+}
+
+extension UIView {
+   func roundCorners(corners: UIRectCorner, radius: CGFloat) {
+        let path = UIBezierPath(roundedRect: bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        let mask = CAShapeLayer()
+        mask.path = path.cgPath
+        layer.mask = mask
     }
 }
 
@@ -105,6 +114,9 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
         backgroundColor = .clear
         clipsToBounds = false
         delegate = self
+        
+        //self.content.layer.cornerRadius = 12
+        
     }
     
     required init?(coder: NSCoder) {
@@ -126,18 +138,26 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
     
     var firstLayout = true
     
-    /*
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         print("did layout subviews \(frame)")
         
         if firstLayout {
+            
             var f = frame
-            //f.size.height = 50
+            f.size.height = content.calculatedHeight()
             frame = f
+            firstLayout = false
+            
+            
+            let heightV = UIView(frame: CGRect(x: 0, y: 0, width: 4, height: content.calculatedHeight()))
+            
         }
         
-    } */
+        content.roundCorners(corners: [.topLeft, .topRight], radius: 12.0)
+        
+    }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if contentOffset.y < 0 {
