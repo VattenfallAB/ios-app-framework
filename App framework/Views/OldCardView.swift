@@ -10,22 +10,6 @@
 import UIKit
 import SwiftUI
 
-/*
-extension BaseTableView: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
-    }
-}
-
-extension BaseScrollView: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-       return false
-       //return true
-    }
-}
-*/
-
-
 struct OldCardView<Content>: UIViewRepresentable where Content: View {
     
     var content: Content
@@ -41,7 +25,7 @@ struct OldCardView<Content>: UIViewRepresentable where Content: View {
     }
 
     func updateUIView(_ view: UIKitCardView<Content>, context: Context) {
-
+        
     }
     
     func makeCoordinator() -> Coordinator {
@@ -75,7 +59,7 @@ extension UIView {
     }
 }
 
-class UIKitCardView<Content>: UIScrollView where Content : View {
+class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content : View {
     
     let content: UIView
     
@@ -90,17 +74,13 @@ class UIKitCardView<Content>: UIScrollView where Content : View {
         self.content.translatesAutoresizingMaskIntoConstraints = false
 
         addSubview(self.content)
-        
-        
         let views: [String: UIView] = ["contentView": self.content, "superview": self]
         
         var allConstraints = [NSLayoutConstraint]()
-        
         let vertical = NSLayoutConstraint.constraints(withVisualFormat: "V:|-(0)-[contentView]-(0)-|", options: [], metrics: nil, views: views)
         allConstraints += vertical
         let horizontal = NSLayoutConstraint.constraints(withVisualFormat: "H:|-(0)-[contentView(==superview)]-(0)-|", options: [], metrics: nil, views: views)
         allConstraints += horizontal
-        
         NSLayoutConstraint.activate(allConstraints)
         
         self.content.backgroundColor = UIColor.red
@@ -123,24 +103,13 @@ class UIKitCardView<Content>: UIScrollView where Content : View {
         
 
         backgroundColor = .clear
-        
-//        let panGestureRecognition = UIPanGestureRecognizer(target: self, action: #selector(panGestureHandler))
-//        addGestureRecognizer(panGestureRecognition)
-//
-//        panGestureRecognition.cancelsTouchesInView = false
+        clipsToBounds = false
+        delegate = self
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    
-    func viewDidAppear() {
-        
-    }
-    
-    
-    
     
     let onlyHalfOpen = true
     
@@ -155,33 +124,27 @@ class UIKitCardView<Content>: UIScrollView where Content : View {
     enum ViewState {case opened, middle, closed}
     var viewState = ViewState.closed
     
+    var firstLayout = true
+    
+    /*
     override func layoutSubviews() {
         super.layoutSubviews()
-        //print("did layout subviews")
-    }
+        print("did layout subviews \(frame)")
+        
+        if firstLayout {
+            var f = frame
+            //f.size.height = 50
+            frame = f
+        }
+        
+    } */
     
-    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        print("pressesBegan")
-    }
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("touchesBegan")
-    }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("touchesMoved")
-    }
-    
-    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        print("motionBegan")
-    }
-    
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        print("hitTest")
-        return super.hitTest(point, with: event)
-    }
-    
-    override func touchesShouldBegin(_ touches: Set<UITouch>, with event: UIEvent?, in view: UIView) -> Bool {
-        false
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if contentOffset.y < 0 {
+            var f = frame
+            f.origin.y -= contentOffset.y
+            frame = f
+        }
     }
     
     /*
