@@ -14,10 +14,9 @@ struct OldCardView<Content>: UIViewRepresentable where Content: View {
     var content: Content
     var contentHolder: UIKitCardView<Content>
     
-    init(@ViewBuilder content: () -> Content) {
+    init(dismissed:@escaping ()->Void, @ViewBuilder content: () -> Content) {
         self.content = content()
-        contentHolder = UIKitCardView(content: self.content)
-        
+        contentHolder = UIKitCardView(dismissed: dismissed, content: self.content)
     }
     
     func makeUIView(context: Context) -> UIKitCardView<Content> {
@@ -68,11 +67,13 @@ extension UIView {
 }
 
 class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content : View {
+    var dismissed: ()->Void
     
     let content: UIView
     
-    init(content: Content) {
+    init(dismissed: @escaping ()->Void, content: Content) {
         self.content = UIHostingController(rootView: content).view
+        self.dismissed = dismissed
         
         super.init(frame: .zero)
         
@@ -150,10 +151,18 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
             return
         }
         if contentOffset.y < 0  || (frame.origin.y > (superview?.frame.size.height ?? 0) - contentheight) {
+            print(contentOffset.y)
             var f = frame
             f.origin.y -= contentOffset.y
             frame = f
+            
+            
         }
+    }
+    //@State var isClosed = false
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        //print("v: \(velocity)")
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
@@ -161,6 +170,7 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
         
         
         if outOfOffset() {
+            //self.isClosed = true
             UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
                 let contentheight = self.content.calculatedHeight()
                 if let sView = self.superview {
@@ -169,7 +179,12 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
                     f.origin.y = sView.frame.size.height + (self.superview?.superview?.safeAreaInsets.bottom ?? 0)
                     self.frame = f
                 }
+            }, completion: { finished in
+                //if self.isClosed {
+                    self.dismissed()
+                //}
             })
+            
         } else {
             UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
                 self.moveToBottom()

@@ -102,7 +102,7 @@ struct BottomNavigationView: View {
             
             Group {
                 if cardType == .some {
-                    OldCardView {
+                    OldCardView(dismissed: dismissed) {
                         Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
                     }
                 }
@@ -142,12 +142,15 @@ struct BottomNavigationView: View {
         }
     }
 
-    
-    func showBlockingCard<V>(@ViewBuilder content: () -> V) where V: View {
-        blockingCardView = OldCardView {
-            AnyView(content())
-        }
+    func dismissed() {
+        cardType = .none
     }
+    
+//    func showBlockingCard<V>(@ViewBuilder content: () -> V) where V: View {
+//        blockingCardView = OldCardView(dismissed: dismissed) {
+//            AnyView(content())
+//        }
+//    }
 }
 
 //struct MakeView: TupleView<BottomNavigationView.CardType> {
@@ -160,3 +163,16 @@ struct ContentView_Previews: PreviewProvider {
         BottomNavigationView()
     }
 }
+
+
+//struct CardViews: View {
+//    var body: some View {
+//       Group {
+//           switch containedView {
+//              case .home: HomeView()
+//              case .categories: CategoriesView()
+//              ...
+//           }
+//       }
+//    }
+//}
