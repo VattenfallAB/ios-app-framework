@@ -24,13 +24,25 @@ struct ContentView: View {
 
 struct BottomNavigationView: View {
     
+    @State var cardType: CardType = .none
+    
+    enum CardType {
+        case none
+        case some
+        //case error(title: String)
+        
+        
+    }
     
     init() {
         contentView = AnyView(V1())
     }
     
-    @State private var blockingCardView: CardView<AnyView>?
+    //@State private var blockingCardView: CardView<AnyView>?
     @State private var contentView: AnyView?
+    
+    
+    @State private var blockingCardView: OldCardView<AnyView>?
     
     var body: some View {
         
@@ -39,10 +51,10 @@ struct BottomNavigationView: View {
                 
                 ZStack {
                     contentView
-                    blockingCardView
+                    //blockingCardView
                     
 //                    CardView {
-//                                Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
+//
 //                           }
                 }
 
@@ -55,6 +67,16 @@ struct BottomNavigationView: View {
                             self.contentView = AnyView(V1())
                             
                             //self.show(view: AnyView(Text("OK")))
+                            
+                            
+                            self.cardType = .some
+//                            self.showBlockingCard {
+//                                HStack {
+//                                    Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
+//                                    Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
+//                                }
+//                            }
+                            
                         })
                         BottomTabButton(title: "Sessions", iconName: "ic_sessions_bottom_navigation", action: {
                             self.contentView = AnyView(V2())
@@ -78,41 +100,60 @@ struct BottomNavigationView: View {
                 
             }
             
-            
-            OldCardView {
-                //CardView {
-                HStack {
-                    Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
-                    Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
+            Group {
+                if cardType == .some {
+                    OldCardView {
+                        Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
+                    }
                 }
+                //if cardType == .none {
                     
+                //} else {
+                 //   Text("")
                 //}
             }
-        
-            //cardView
+            //cardType.cardView()
+            
+  //          TupleView {
+//                switch self.cardType {
+//                case .error(let test):
+//                    return OldCardView {
+//                        HStack {
+//                            Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
+//                            Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
+//                        }
+//                    }
+//                default:
+//                    return Text("")
+                    
+////                    return OldCardView {
+////                        Text("asdf")
+////                    }
+//                case .none:
+                     
+                //case .error(let title):
+                    //return
+//                        AnyView(Text(""))
+//                }
+    //        }
+            
+            
+            //blockingCardView
         }
     }
+
     
-    private func showTab(no: Int) {
-        
-    }
-    
-    func showBlockingCard<T>(@ViewBuilder contentBuilder: () -> T) where T: View {
-        //self.cardView = BlockingCard(contentView: view))
-        let content = AnyView(contentBuilder())
-        
-        let sv = ScrollView {
-            Text("eaxmple")
+    func showBlockingCard<V>(@ViewBuilder content: () -> V) where V: View {
+        blockingCardView = OldCardView {
+            AnyView(content())
         }
-        
-        
-        
-//        blockingCardView = CardView {
-//            Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
-//        }
-        
     }
 }
+
+//struct MakeView: TupleView<BottomNavigationView.CardType> {
+
+//}
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

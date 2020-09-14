@@ -20,11 +20,6 @@ struct OldCardView<Content>: UIViewRepresentable where Content: View {
         
     }
     
-    func topRadius(radius: Float) -> some View {
-        return self
-    }
-    
-    
     func makeUIView(context: Context) -> UIKitCardView<Content> {
         return contentHolder
     }
@@ -44,7 +39,6 @@ struct OldCardView<Content>: UIViewRepresentable where Content: View {
             self.parent = parent
         }
     }
-    
 }
 
 private extension CALayer {
@@ -150,12 +144,7 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-        
-        
         let contentheight = self.content.calculatedHeight()
-        
-        
-        
         
         if isViewDragging == false {
             return
