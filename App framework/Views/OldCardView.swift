@@ -89,12 +89,16 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
         allConstraints += horizontal
         NSLayoutConstraint.activate(allConstraints)
         
-        self.content.backgroundColor = .red
+        //self.content.backgroundColor = .red
         
         alwaysBounceVertical = true
         backgroundColor = .clear
         clipsToBounds = false
         delegate = self
+        
+        bottomLayer.backgroundColor = self.content.backgroundColor?.cgColor
+        //bottomLayer.backgroundColor = UIColor.black.cgColor
+        layer.addSublayer(bottomLayer)
     }
     
     required init?(coder: NSCoder) {
@@ -103,6 +107,7 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
         
     var firstLayout = true
     
+    let bottomLayer = CALayer()
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -111,6 +116,8 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
             firstLayout = false
         }
         content.roundCorners(corners: [.topLeft, .topRight], radius: 12.0)
+        bottomLayer.frame = CGRect(x: 0, y: content.frame.size.height, width: content.frame.size.width, height: 1000)
+        
     }
     
     private func moveToBottom() {

@@ -102,7 +102,9 @@ struct BottomNavigationView: View {
             
             Group {
                 if cardType == .some {
+                    Color.black.opacity(0.2).edgesIgnoringSafeArea(.all)
                     OldCardView(dismissed: dismissed) {
+                        Text("Title").font(.headline).padding(EdgeInsets(top: 32, leading: 0, bottom: 32, trailing: 0))
                         Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
                     }
                 }
