@@ -112,12 +112,28 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
     override func layoutSubviews() {
         super.layoutSubviews()
         if firstLayout {
-            moveToBottom()
+            moveToClosed()
+            
             firstLayout = false
+            
+            UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
+                self.moveToBottom()
+            })
+            
         }
         content.roundCorners(corners: [.topLeft, .topRight], radius: 12.0)
         bottomLayer.frame = CGRect(x: 0, y: content.frame.size.height, width: content.frame.size.width, height: 1000)
         
+    }
+
+    private func moveToClosed() {
+        let contentheight = content.calculatedHeight()
+        if let sView = superview {
+            var f = frame
+            f.size.height = contentheight
+            f.origin.y = sView.frame.size.height
+            frame = f
+        }
     }
     
     private func moveToBottom() {
