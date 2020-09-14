@@ -124,10 +124,10 @@ class UIKitCardView<Content>: UIScrollView where Content : View {
 
         backgroundColor = .clear
         
-        let panGestureRecognition = UIPanGestureRecognizer(target: self, action: #selector(panGestureHandler))
-        addGestureRecognizer(panGestureRecognition)
-        
-        panGestureRecognition.cancelsTouchesInView = false
+//        let panGestureRecognition = UIPanGestureRecognizer(target: self, action: #selector(panGestureHandler))
+//        addGestureRecognizer(panGestureRecognition)
+//
+//        panGestureRecognition.cancelsTouchesInView = false
     }
     
     required init?(coder: NSCoder) {
@@ -157,11 +157,40 @@ class UIKitCardView<Content>: UIScrollView where Content : View {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        print("did layout subviews")
+        //print("did layout subviews")
+    }
+    
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        print("pressesBegan")
+    }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("touchesBegan")
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("touchesMoved")
+    }
+    
+    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        print("motionBegan")
+    }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        print("hitTest")
+        return super.hitTest(point, with: event)
+    }
+    
+    override func touchesShouldBegin(_ touches: Set<UITouch>, with event: UIEvent?, in view: UIView) -> Bool {
+        false
+    }
+    
+    /*
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+       return true
     }
     
     @objc func panGestureHandler(gestureRecognizer: UIPanGestureRecognizer) {
-        /*guard let superview = superview else {return}
+        guard let superview = superview else {return}
         guard let parentview = superview.superview else {return}
         
         switch gestureRecognizer.state {
@@ -327,10 +356,10 @@ class UIKitCardView<Content>: UIScrollView where Content : View {
         default:
             break
         }
- */
+
     }
-    
-    
+    */
+    /*
     func resetView() {
         if needAlfa {
             alpha = 1
@@ -353,5 +382,5 @@ class UIKitCardView<Content>: UIScrollView where Content : View {
         f.origin.y = superview.frame.size.height
         superview.frame = f
         viewState = .closed
-    }
+    } */
 }
