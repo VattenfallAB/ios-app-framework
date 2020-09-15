@@ -248,6 +248,8 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
     
     var isViewDragging = false
     
+    var offsetReads: [(date: Date, offset:CGFloat)] = []
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         let contentheight = self.content.calculatedHeight()
@@ -256,20 +258,34 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
             return
         }
         if contentOffset.y < 0  || (frame.origin.y > (superview?.frame.size.height ?? 0) - contentheight) {
-            print(contentOffset.y)
             var f = frame
             f.origin.y -= contentOffset.y
             frame = f
             
+            offsetReads.append((date: Date(), offset: frame.origin.y))
             
+            if offsetReads.count > 40 {
+                offsetReads.removeFirst()
+            }
         }
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         isViewDragging = false
         
+        let currentDate = Date()
+        let revelentTimestamps = offsetReads.filter{abs($0.date.timeIntervalSince1970 - currentDate.timeIntervalSince1970)<0.1}
         
-        if outOfOffset() {
+        let speed: CGFloat
+        if let firstTimestamp = revelentTimestamps.first, let lastTimestamp = revelentTimestamps.last, firstTimestamp != lastTimestamp {
+            let t = abs(firstTimestamp.date.timeIntervalSince1970 - lastTimestamp.date.timeIntervalSince1970)
+            let s = abs(firstTimestamp.offset - lastTimestamp.offset)
+            speed = s/CGFloat(t)
+        } else {
+            speed = 0
+        }
+        
+        if outOfOffset() || speed > 800 {
             UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
                 let contentheight = self.content.calculatedHeight()
                 if let sView = self.superview {
