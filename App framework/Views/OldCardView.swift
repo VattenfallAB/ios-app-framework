@@ -91,15 +91,12 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
         allConstraints += horizontal
         NSLayoutConstraint.activate(allConstraints)
         
-        //self.content.backgroundColor = .red
-        
         alwaysBounceVertical = true
         backgroundColor = .clear
         clipsToBounds = false
         delegate = self
         
         bottomLayer.backgroundColor = self.content.backgroundColor?.cgColor
-        //bottomLayer.backgroundColor = UIColor.black.cgColor
         layer.addSublayer(bottomLayer)
     }
     
@@ -184,7 +181,6 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
             
         }
     }
-    //@State var isClosed = false
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         //print("v: \(velocity)")
@@ -195,7 +191,6 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
         
         
         if outOfOffset() {
-            //self.isClosed = true
             UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
                 let contentheight = self.content.calculatedHeight()
                 if let sView = self.superview {
@@ -205,9 +200,7 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
                     self.frame = f
                 }
             }, completion: { finished in
-                //if self.isClosed {
                     self.dismissed()
-                //}
             })
             
         } else {

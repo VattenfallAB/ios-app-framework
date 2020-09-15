@@ -11,10 +11,11 @@ import SwiftUI
 
 struct BottomTabButton: View {
     let title: String
+    let selected: Bool
     let iconName: String
     let action: ()->Void
     
-    @State private var color: Color = Style.vfBlack
+    //@State private var color: Color = Style.vfBlack
     
     var body: some View {
         Button(action: action) {
@@ -23,7 +24,7 @@ struct BottomTabButton: View {
                 Text(title)
             }
         }
-        .accentColor(color)
+        .accentColor(selected ? Style.vfBlue : Style.vfBlack)
         .font(Font.system(size: 12, weight: .medium))
         .frame(minWidth: 0,maxWidth: .infinity, minHeight: 55,maxHeight: 55)
     }

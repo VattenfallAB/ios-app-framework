@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
-        let contentView = BottomNavigationView()
+        let contentView = BottomNavigationView(v1: {V1()}, v2: {V2()}, v3: {V3()}, v4: {V4()}, v5: {V5()})
 
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)

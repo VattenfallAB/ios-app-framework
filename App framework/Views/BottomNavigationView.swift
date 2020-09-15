@@ -27,8 +27,14 @@ struct HitTestingShape : Shape {
     }
 }
 
-struct BottomNavigationView: View {
+struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2: View, T3: View, T4: View, T5: View {
     
+    enum TabItem {
+        case map, sessions, charge, favourities, more
+        
+    }
+    
+    @State var selectedTab: TabItem = .map
     @State var cardType: CardType = .none
     
     enum CardType {
@@ -39,12 +45,24 @@ struct BottomNavigationView: View {
         
     }
     
-    init() {
-        contentView = AnyView(V1())
+    
+    let v1: T1
+    let v2: T2
+    let v3: T3
+    let v4: T4
+    let v5: T5
+    
+    init(@ViewBuilder v1: () -> T1, @ViewBuilder v2: () -> T2, @ViewBuilder v3: () -> T3, @ViewBuilder v4: () -> T4, @ViewBuilder v5: () -> T5) {
+        self.v1 = v1()
+        self.v2 = v2()
+        self.v3 = v3()
+        self.v4 = v4()
+        self.v5 = v5()
+        
     }
     
     //@State private var blockingCardView: CardView<AnyView>?
-    @State private var contentView: AnyView?
+    //@State private var contentView: AnyView?
     
     
     @State private var blockingCardView: OldCardView<AnyView>?
@@ -55,7 +73,27 @@ struct BottomNavigationView: View {
             VStack {
                 
                 ZStack {
-                    contentView
+                    
+                    Group {
+                        
+                        if selectedTab == .map {
+                            ZStack {
+                                v1
+                                Button(action: {
+                                    self.cardType = .some
+                                }, label: {Text("Show card")})
+                            }
+                        } else if selectedTab == .sessions {
+                            v2
+                        } else if selectedTab == .charge {
+                            v3
+                        } else if selectedTab == .favourities {
+                            v4
+                        } else if selectedTab == .more {
+                            v5
+                        }
+                    }
+                    //contentView
                     //blockingCardView
                     
 //                    CardView {
@@ -68,13 +106,13 @@ struct BottomNavigationView: View {
                     Style.vfGray.frame(minHeight: 0.5, idealHeight: 0.5, maxHeight: 0.5)
                         
                     HStack {
-                        BottomTabButton(title: "Map", iconName: "ic_map_bottom_navigation", action: {
-                            self.contentView = AnyView(V1())
+                        BottomTabButton(title: "Map", selected: self.selectedTab == .map, iconName: "ic_map_bottom_navigation", action: {
+                            //self.contentView = AnyView(V1())
                             
                             //self.show(view: AnyView(Text("OK")))
                             
-                            
-                            self.cardType = .some
+                            self.selectedTab = .map
+                            //self.cardType = .some
 //                            self.showBlockingCard {
 //                                HStack {
 //                                    Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
@@ -83,21 +121,25 @@ struct BottomNavigationView: View {
 //                            }
                             
                         })
-                        BottomTabButton(title: "Sessions", iconName: "ic_sessions_bottom_navigation", action: {
-                            self.contentView = AnyView(V2())
+                        BottomTabButton(title: "Sessions", selected: self.selectedTab == .sessions, iconName: "ic_sessions_bottom_navigation", action: {
+                            //self.contentView = AnyView(V2())
+                            self.selectedTab = .sessions
                         })
                         ZStack {
                             Image("ic_circle_bottom_navigation").offset(x: 0, y: -7)
-                            BottomTabButton(title: "Charge", iconName: "ic_charging_slow", action: {
-                                self.contentView = AnyView(V3())
+                            BottomTabButton(title: "Charge", selected: self.selectedTab == .charge, iconName: "ic_charging_slow", action: {
+                                //self.contentView = AnyView(V3())
+                                self.selectedTab = .charge
                             })
                         }
                         
-                        BottomTabButton(title: "Favourites", iconName: "ic_star", action: {
-                            self.contentView = AnyView(V4())
+                        BottomTabButton(title: "Favourites", selected: self.selectedTab == .favourities, iconName: "ic_star", action: {
+                            //self.contentView = AnyView(V4())
+                            self.selectedTab = .favourities
                         })
-                        BottomTabButton(title: "More", iconName: "ic_more_bottom_navigation", action: {
-                            self.contentView = AnyView(V5())
+                        BottomTabButton(title: "More", selected: self.selectedTab == .more, iconName: "ic_more_bottom_navigation", action: {
+                            self.selectedTab = .more
+                            //self.contentView = AnyView(V5())
                         })
                             
                     }
@@ -127,35 +169,6 @@ struct BottomNavigationView: View {
                 //Rectangle().allowsHitTesting(true)
             }//.contentShape(HitTestingShape())
             
-            
-                
-            //cardType.cardView()
-            
-  //          TupleView {
-//                switch self.cardType {
-//                case .error(let test):
-//                    return OldCardView {
-//                        HStack {
-//                            Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
-//                            Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
-//                        }
-//                    }
-//                default:
-//                    return Text("")
-                    
-////                    return OldCardView {
-////                        Text("asdf")
-////                    }
-//                case .none:
-                     
-                //case .error(let title):
-                    //return
-//                        AnyView(Text(""))
-//                }
-    //        }
-            
-            
-            //blockingCardView
         }
     }
 
@@ -177,7 +190,7 @@ struct BottomNavigationView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        BottomNavigationView()
+        BottomNavigationView(v1: {V1()}, v2: {V2()}, v3: {V3()}, v4: {V4()}, v5: {V5()})
     }
 }
 
