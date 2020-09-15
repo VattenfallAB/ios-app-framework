@@ -15,8 +15,6 @@ struct BottomTabButton: View {
     let iconName: String
     let action: ()->Void
     
-    //@State private var color: Color = Style.vfBlack
-    
     var body: some View {
         Button(action: action) {
             VStack(alignment: .center, spacing: 0) {

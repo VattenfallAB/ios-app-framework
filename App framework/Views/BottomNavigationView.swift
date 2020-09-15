@@ -15,37 +15,12 @@ struct Style {
     static var vfGray = Color(red: 169.0 / 255.0, green: 169.0 / 255.0, blue: 169.0 / 255.0)
 }
 
-struct ContentView: View {
-    var body: some View {
-        Text("sdf")
-    }
-}
-
-struct HitTestingShape : Shape {
-    func path(in rect: CGRect) -> Path {
-        return Path(CGRect(x: 0, y: 0, width: 0, height: 0))
-    }
-}
-
 struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2: View, T3: View, T4: View, T5: View {
     
-    enum TabItem {
-        case map, sessions, charge, favourities, more
-        
-    }
+    enum TabItem { case map, sessions, charge, favourities, more }
     
     @State var selectedTab: TabItem = .map
-    @State var cardType: CardType = .none
-    
-    enum CardType {
-        case none
-        case some
-        //case error(title: String)
-        
-        
-    }
-    
-    
+
     let v1: T1
     let v2: T2
     let v3: T3
@@ -58,134 +33,106 @@ struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2: View, 
         self.v3 = v3()
         self.v4 = v4()
         self.v5 = v5()
-        
     }
     
-    //@State private var blockingCardView: CardView<AnyView>?
-    //@State private var contentView: AnyView?
+    @State private var blockingCardView: CardView<AnyView>?
     
-    
-    @State private var blockingCardView: OldCardView<AnyView>?
+    @State var cardType: CardType = .none
     
     var body: some View {
         
-        ZStack {
-            VStack {
-                
-                ZStack {
+        CardView(cardType: cardType) {
+                VStack {
                     
-                    Group {
+                    ZStack {
                         
-                        if selectedTab == .map {
-                            ZStack {
+                        Group {
+                            
+                            if selectedTab == .map {
+                                
+                                
+                                                                ZStack {
+                                //                                    CardView(dismissed: dismissed) {
                                 v1
-                                Button(action: {
-                                    self.cardType = .some
-                                }, label: {Text("Show card")})
+                                //                                    }
+                                
+                                                                    Button(action: {
+                                                                        self.cardType = .error(title:"sdc")
+                                                                        
+                                                                    }, label: {Text("Show errorcard")})
+                                                                }
+                            } else if selectedTab == .sessions {
+                                v2
+                            } else if selectedTab == .charge {
+                                v3
+                            } else if selectedTab == .favourities {
+                                v4
+                            } else if selectedTab == .more {
+                                v5
                             }
-                        } else if selectedTab == .sessions {
-                            v2
-                        } else if selectedTab == .charge {
-                            v3
-                        } else if selectedTab == .favourities {
-                            v4
-                        } else if selectedTab == .more {
-                            v5
                         }
                     }
-                    //contentView
-                    //blockingCardView
-                    
-//                    CardView {
-//
-//                           }
-                }
 
-                Spacer(minLength: 0)
-                VStack(alignment: .center, spacing: 0) {
-                    Style.vfGray.frame(minHeight: 0.5, idealHeight: 0.5, maxHeight: 0.5)
-                        
-                    HStack {
-                        BottomTabButton(title: "Map", selected: self.selectedTab == .map, iconName: "ic_map_bottom_navigation", action: {
-                            //self.contentView = AnyView(V1())
+                    Spacer(minLength: 0)
+                    VStack(alignment: .center, spacing: 0) {
+                        Style.vfGray.frame(minHeight: 0.5, idealHeight: 0.5, maxHeight: 0.5)
                             
-                            //self.show(view: AnyView(Text("OK")))
-                            
-                            self.selectedTab = .map
-                            //self.cardType = .some
-//                            self.showBlockingCard {
-//                                HStack {
-//                                    Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
-//                                    Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
-//                                }
-//                            }
-                            
-                        })
-                        BottomTabButton(title: "Sessions", selected: self.selectedTab == .sessions, iconName: "ic_sessions_bottom_navigation", action: {
-                            //self.contentView = AnyView(V2())
-                            self.selectedTab = .sessions
-                        })
-                        ZStack {
-                            Image("ic_circle_bottom_navigation").offset(x: 0, y: -7)
-                            BottomTabButton(title: "Charge", selected: self.selectedTab == .charge, iconName: "ic_charging_slow", action: {
-                                //self.contentView = AnyView(V3())
-                                self.selectedTab = .charge
+                        HStack {
+                            BottomTabButton(title: "Map", selected: self.selectedTab == .map, iconName: "ic_map_bottom_navigation", action: {
+                                self.selectedTab = .map
+                                
                             })
-                        }
-                        
-                        BottomTabButton(title: "Favourites", selected: self.selectedTab == .favourities, iconName: "ic_star", action: {
-                            //self.contentView = AnyView(V4())
-                            self.selectedTab = .favourities
-                        })
-                        BottomTabButton(title: "More", selected: self.selectedTab == .more, iconName: "ic_more_bottom_navigation", action: {
-                            self.selectedTab = .more
-                            //self.contentView = AnyView(V5())
-                        })
+                            BottomTabButton(title: "Sessions", selected: self.selectedTab == .sessions, iconName: "ic_sessions_bottom_navigation", action: {
+                                self.selectedTab = .sessions
+                            })
+                            ZStack {
+                                Image("ic_circle_bottom_navigation").offset(x: 0, y: -7)
+                                BottomTabButton(title: "Charge", selected: self.selectedTab == .charge, iconName: "ic_charging_slow", action: {
+                                    self.selectedTab = .charge
+                                })
+                            }
                             
+                            BottomTabButton(title: "Favourites", selected: self.selectedTab == .favourities, iconName: "ic_star", action: {
+                                self.selectedTab = .favourities
+                            })
+                            BottomTabButton(title: "More", selected: self.selectedTab == .more, iconName: "ic_more_bottom_navigation", action: {
+                                self.selectedTab = .more
+                            })
+                                
+                        }
                     }
+                    
                 }
                 
-            }
-            
-            Group {
-//            Rectangle().background(Color.black).opacity(0.2).disabled(true)
-                //
-                if cardType == .some {
-                    Color.black.opacity(0.2).edgesIgnoringSafeArea(.all)
-                    OldCardView(dismissed: dismissed) {
-                        Text("Title").font(.headline).padding(EdgeInsets(top: 32, leading: 0, bottom: 32, trailing: 0))
-                        Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
-                    }
-                        
-                    /*.clipShape(Circle()).contentShape(HitTestingShape())*/
-                    //.opacity(0.5)
-                }
- 
-                //if cardType == .none {
-                    
-                //} else {
-                 //   Text("")
-                //}
-                //Rectangle().allowsHitTesting(true)
-            }//.contentShape(HitTestingShape())
-            
-        }
+//                Group {
+//    //            Rectangle().background(Color.black).opacity(0.2).disabled(true)
+//                    //
+//                    if cardType == .some {
+//
+//
+//                        //Color.black.opacity(0.2).edgesIgnoringSafeArea(.all)
+//
+//
+//                        /*.clipShape(Circle()).contentShape(HitTestingShape())*/
+//                        //.opacity(0.5)
+//                    }
+//
+//                    //if cardType == .none {
+//
+//                    //} else {
+//                     //   Text("")
+//                    //}
+//                    //Rectangle().allowsHitTesting(true)
+//                }//.contentShape(HitTestingShape())
+                
+           // }.edgesIgnoringSafeArea(.top)
+        }.edgesIgnoringSafeArea(.top)
     }
 
-    func dismissed() {
-        cardType = .none
-    }
-    
-//    func showBlockingCard<V>(@ViewBuilder content: () -> V) where V: View {
-//        blockingCardView = OldCardView(dismissed: dismissed) {
-//            AnyView(content())
-//        }
+//    func dismissed() {
+//        cardType = .none
 //    }
 }
-
-//struct MakeView: TupleView<BottomNavigationView.CardType> {
-
-//}
 
 
 struct ContentView_Previews: PreviewProvider {
