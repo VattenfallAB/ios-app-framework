@@ -21,6 +21,11 @@ struct ContentView: View {
     }
 }
 
+struct HitTestingShape : Shape {
+    func path(in rect: CGRect) -> Path {
+        return Path(CGRect(x: 0, y: 0, width: 0, height: 0))
+    }
+}
 
 struct BottomNavigationView: View {
     
@@ -101,19 +106,29 @@ struct BottomNavigationView: View {
             }
             
             Group {
+//            Rectangle().background(Color.black).opacity(0.2).disabled(true)
+                //
                 if cardType == .some {
                     Color.black.opacity(0.2).edgesIgnoringSafeArea(.all)
                     OldCardView(dismissed: dismissed) {
                         Text("Title").font(.headline).padding(EdgeInsets(top: 32, leading: 0, bottom: 32, trailing: 0))
                         Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
                     }
+                        
+                    /*.clipShape(Circle()).contentShape(HitTestingShape())*/
+                    //.opacity(0.5)
                 }
+ 
                 //if cardType == .none {
                     
                 //} else {
                  //   Text("")
                 //}
-            }
+                //Rectangle().allowsHitTesting(true)
+            }//.contentShape(HitTestingShape())
+            
+            
+                
             //cardType.cardView()
             
   //          TupleView {

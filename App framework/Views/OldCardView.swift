@@ -14,6 +14,8 @@ struct OldCardView<Content>: UIViewRepresentable where Content: View {
     var content: Content
     var contentHolder: UIKitCardView<Content>
     
+    
+    
     init(dismissed:@escaping ()->Void, @ViewBuilder content: () -> Content) {
         self.content = content()
         contentHolder = UIKitCardView(dismissed: dismissed, content: self.content)
