@@ -15,9 +15,9 @@ import SwiftUI
 
 
 extension CardView {
-    var errorView: some View {
+    func errorView(title:String) -> some View {
         VStack {
-            Text("Title").font(.headline).padding(EdgeInsets(top: 32, leading: 0, bottom: 32, trailing: 0))
+            Text("Title : \(title)").font(.headline).padding(EdgeInsets(top: 32, leading: 0, bottom: 32, trailing: 0))
             Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
             Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
         }
@@ -30,9 +30,14 @@ enum CardType {
     case none
 }
 
+class CardState: ObservableObject {
+    @Published var cardType: CardType = .none
+}
+
 struct CardView<Content>: UIViewRepresentable where Content: View {
     
-    var cardType: CardType
+   
+    @Binding var cardType: CardType
     var content: Content
     //var contentHolder: UIKitCardView<Content>
     
@@ -40,8 +45,8 @@ struct CardView<Content>: UIViewRepresentable where Content: View {
     
     
     
-    init(cardType: CardType, @ViewBuilder content: () -> Content) {
-        self.cardType = cardType
+    init(cardType: Binding<CardType>, @ViewBuilder content: () -> Content) {
+        self._cardType = cardType
         self.content = content()
     }
     
@@ -50,13 +55,13 @@ struct CardView<Content>: UIViewRepresentable where Content: View {
     }
 
     func updateUIView(_ view: RootView, context: Context) {
-        
+        view.subviews.forEach{$0.removeFromSuperview()}
         let uicontent = UIHostingController(rootView: content).view!
         view.insert(view: uicontent)
         
         switch cardType {
         case .error(let title):
-            view.insert(view: errorView)
+            view.insert(view: errorView(title: title))
         case .none:
             break
         }
@@ -131,7 +136,7 @@ class RootView: UIView {
     
     
     func insert<T>(view: T) where T: View {
-        //subviews.forEach{$0.removeFromSuperview()}
+        //
         addView(view: UIKitCardView(content:view))
     }
     

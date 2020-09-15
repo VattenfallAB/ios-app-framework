@@ -37,11 +37,14 @@ struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2: View, 
     
     @State private var blockingCardView: CardView<AnyView>?
     
-    @State var cardType: CardType = .none
+    @ObservedObject var mainCardState = CardState()
+    //@ObservedObject var mainCardType = CardType.none
+    
+    
     
     var body: some View {
         
-        CardView(cardType: cardType) {
+        CardView(cardType: $mainCardState.cardType) {
                 VStack {
                     
                     ZStack {
@@ -51,15 +54,15 @@ struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2: View, 
                             if selectedTab == .map {
                                 
                                 
-                                                                ZStack {
-                                //                                    CardView(dismissed: dismissed) {
-                                v1
-                                //                                    }
-                                
-                                                                    Button(action: {
-                                                                        self.cardType = .error(title:"sdc")
-                                                                        
-                                                                    }, label: {Text("Show errorcard")})
+                                            ZStack {
+            //                                    CardView(dismissed: dismissed) {
+            v1
+            //                                    }
+            
+                                                Button(action: {
+                                                    self.mainCardState.cardType = .error(title:"sdc")
+                                                    
+                                                }, label: {Text("Show errorcard")})
                                                                 }
                             } else if selectedTab == .sessions {
                                 v2
