@@ -1,0 +1,16 @@
+PODS:
+  - WXFramework (0.1.0)
+
+DEPENDENCIES:
+  - WXFramework (from `../`)
+
+EXTERNAL SOURCES:
+  WXFramework:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  WXFramework: 7d407704f87b11e619afbed73ae8b5d4c7df69bf
+
+PODFILE CHECKSUM: 316b84da2575fa81d147f052c48910cb280a602b
+
+COCOAPODS: 1.9.3

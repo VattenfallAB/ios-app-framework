@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'WXFramework_Example' do
+  pod 'WXFramework', :path => '../'
+
+  target 'WXFramework_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

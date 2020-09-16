@@ -1,0 +1,22 @@
+{
+  "name": "WXFramework",
+  "version": "0.1.0",
+  "summary": "A short description of WXFramework.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/Artur Gurgul/WXFramework",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Artur Gurgul": "artur.gurgul@vattenfall.com"
+  },
+  "source": {
+    "git": "https://github.com/Artur Gurgul/WXFramework.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "WXFramework/Classes/**/*"
+}
