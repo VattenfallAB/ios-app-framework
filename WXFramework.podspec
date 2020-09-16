@@ -21,11 +21,11 @@ Pod::Spec.new do |s|
 TODO: Add long description of the pod here.
                        DESC
 
-  s.homepage         = 'https://github.com/Artur Gurgul/WXFramework'
+  s.homepage         = 'https://github.com/winux-org/ios-app-framework'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Artur Gurgul' => 'artur.gurgul@winux.org' }
-  s.source           = { :git => 'https://github.com/Artur Gurgul/WXFramework.git', :tag => s.version.to_s }
+  s.source           = { :git => 'git@github.com:winux-org/ios-app-framework.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '13.0'
