@@ -34,29 +34,31 @@ class CardState: ObservableObject {
     @Published var cardType: CardType = .none
 }
 
-struct CardView<Content>: UIViewRepresentable where Content: View {
+struct CardView<Content: View>: UIViewControllerRepresentable {
     
-   
     @Binding var cardType: CardType
-    var content: Content
-    //var contentHolder: UIKitCardView<Content>
+    
+    var content: () -> Content
     
     
-    
-    
-    
-    init(cardType: Binding<CardType>, @ViewBuilder content: () -> Content) {
+    init(cardType: Binding<CardType>, @ViewBuilder content: @escaping () -> Content) {
         self._cardType = cardType
-        self.content = content()
+        self.content = content
     }
     
     func makeUIView(context: Context) -> RootView {
         return RootView()
     }
 
+    func makeUIViewController(context: Context) -> UIHostingController<Content> {
+        return UIHostingController(rootView: content())
+    }
+    
+    /*
     func updateUIView(_ view: RootView, context: Context) {
         view.subviews.forEach{$0.removeFromSuperview()}
         let uicontent = UIHostingController(rootView: content).view!
+        UIHostingController(rootView: content).willMove(toParent: context.coordinator.)
         view.insert(view: uicontent)
         
         switch cardType {
@@ -67,6 +69,10 @@ struct CardView<Content>: UIViewRepresentable where Content: View {
         }
     
         
+    } */
+    
+    func updateUIViewController(_ viewController: UIHostingController<Content>, context: Context) {
+        viewController.rootView = self.content()
     }
     
     func makeCoordinator() -> Coordinator {

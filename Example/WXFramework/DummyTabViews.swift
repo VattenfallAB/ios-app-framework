@@ -17,9 +17,15 @@ struct V1: View {
 }
 struct V2: View {
     var body: some View {
-        Text("V2")
-            .frame(minWidth: 0,maxWidth: .infinity, minHeight: 55,maxHeight: .infinity)
-            .edgesIgnoringSafeArea(.all)
+        VStack {
+            NavigationView {
+                Text("ok").navigationBarTitle("hej")
+            }
+            Color.red.frame( minHeight: 100, idealHeight: 100, maxHeight: 100, alignment: .bottom)
+        }
+//        Text("V2")
+//            .frame(minWidth: 0,maxWidth: .infinity, minHeight: 55,maxHeight: .infinity)
+//            .edgesIgnoringSafeArea(.all)
     }
 }
 struct V3: View {

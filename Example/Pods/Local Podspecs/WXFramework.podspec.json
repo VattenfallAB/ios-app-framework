@@ -3,20 +3,20 @@
   "version": "0.1.0",
   "summary": "A short description of WXFramework.",
   "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/Artur Gurgul/WXFramework",
+  "homepage": "https://github.com/winux-org/ios-app-framework",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
   },
   "authors": {
-    "Artur Gurgul": "artur.gurgul@vattenfall.com"
+    "Artur Gurgul": "artur.gurgul@winux.org"
   },
   "source": {
-    "git": "https://github.com/Artur Gurgul/WXFramework.git",
+    "git": "git@github.com:winux-org/ios-app-framework.git",
     "tag": "0.1.0"
   },
   "platforms": {
-    "ios": "8.0"
+    "ios": "13.0"
   },
   "source_files": "WXFramework/Classes/**/*"
 }

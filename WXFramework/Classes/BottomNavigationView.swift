@@ -56,12 +56,12 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
                         
                         Group {
                             
-                            if selectedTab == .map {
+                            if self.selectedTab == .map {
                                 
                                 
                                             ZStack {
             //                                    CardView(dismissed: dismissed) {
-            v1
+                                                self.v1
             //                                    }
             
                                                 Button(action: {
@@ -69,14 +69,14 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
                                                     
                                                 }, label: {Text("Show errorcard")})
                                                                 }
-                            } else if selectedTab == .sessions {
-                                v2
-                            } else if selectedTab == .charge {
-                                v3
-                            } else if selectedTab == .favourities {
-                                v4
-                            } else if selectedTab == .more {
-                                v5
+                            } else if self.selectedTab == .sessions {
+                                self.v2
+                            } else if self.selectedTab == .charge {
+                                self.v3
+                            } else if self.selectedTab == .favourities {
+                                self.v4
+                            } else if self.selectedTab == .more {
+                                self.v5
                             }
                         }
                     }
