@@ -14,6 +14,10 @@ public class II {
     }
 }
 
+protocol TabRootView: View {
+    
+}
+
 struct Style {
     static var vfBlack = Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 34.0 / 255.0)
     static var vfBlue = Color(red: 32.0 / 255.0, green: 113.0 / 255.0, blue: 181.0 / 255.0)
@@ -45,6 +49,7 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
     @ObservedObject var mainCardState = CardState()
     //@ObservedObject var mainCardType = CardType.none
     
+    //@EnvironmentObject private var mainCardState: CardState
     
     
     public var body: some View {
@@ -63,11 +68,19 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
             //                                    CardView(dismissed: dismissed) {
                                                 self.v1
             //                                    }
-            
-                                                Button(action: {
-                                                    self.mainCardState.cardType = .error(title:"sdc")
+                                                VStack {
+                                                    Button(action: {
+                                                        self.mainCardState.cardType = .error(title:"sdc")
+                                                        
+                                                    }, label: {Text("Show error card")})
                                                     
-                                                }, label: {Text("Show errorcard")})
+                                                    Button(action: {
+                                                        self.mainCardState.cardType = .list
+                                                        
+                                                    }, label: {Text("Show list")})
+                                                }
+                                                 
+                                                
                                                                 }
                             } else if self.selectedTab == .sessions {
                                 self.v2

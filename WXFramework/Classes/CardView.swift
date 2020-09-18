@@ -11,9 +11,6 @@ import UIKit
 import SwiftUI
 
 
-
-
-
 extension CardView {
     func errorView(title:String) -> some View {
         VStack {
@@ -22,12 +19,31 @@ extension CardView {
             Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
         }
     }
+    
+    func list() -> some View {
+        //List {
+          //  ForEach(1..<100) {_ in
+                Text("Example very long list")
+            //}
+        //}.frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
 }
 
 
 enum CardType {
     case error(title: String)
+    case list
+    case any(view: AnyView)
     case none
+    /*
+    func create()-> some View {
+        switch self {
+        case .none:
+            return EmptyView()
+        default:
+            return Text("")
+        }
+    }*/
 }
 
 class CardState: ObservableObject {
@@ -46,46 +62,24 @@ struct CardView<Content: View>: UIViewControllerRepresentable {
         self.content = content
     }
     
-    func makeUIView(context: Context) -> RootView {
-        return RootView()
-    }
-
-    func makeUIViewController(context: Context) -> UIHostingController<Content> {
-        return UIHostingController(rootView: content())
+    func makeUIViewController(context: Context) -> CardHolderViewController<Content> {
+        return CardHolderViewController(cardType: $cardType,rootView: content())
     }
     
-    /*
-    func updateUIView(_ view: RootView, context: Context) {
-        view.subviews.forEach{$0.removeFromSuperview()}
-        let uicontent = UIHostingController(rootView: content).view!
-        UIHostingController(rootView: content).willMove(toParent: context.coordinator.)
-        view.insert(view: uicontent)
+    func updateUIViewController(_ viewController: CardHolderViewController<Content>, context: Context) {
+        viewController.rootView = self.content()
+        
         
         switch cardType {
         case .error(let title):
-            view.insert(view: errorView(title: title))
-        case .none:
+            viewController.show(view: errorView(title: title), full: false)
+        case .list:
+            viewController.show(view:list() ,full: true)
+        case .none, .any:
             break
         }
-    
-        
-    } */
-    
-    func updateUIViewController(_ viewController: UIHostingController<Content>, context: Context) {
-        viewController.rootView = self.content()
     }
     
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-
-    class Coordinator: NSObject {
-        var parent: CardView
-
-        init(_ parent: CardView) {
-            self.parent = parent
-        }
-    }
 }
 
 private extension CALayer {
@@ -131,40 +125,59 @@ extension UIView {
     }
 }
 
-class RootView: UIView {
+class CardHolderViewController<Content>: UIViewController where Content: View {
     
-    init() {
-        super.init(frame: .zero)
+    @Binding var cardType: CardType
+    
+    private let hostingViewController: UIHostingController<Content>
+    private var scrollView: UIScrollView?
+    init(cardType: Binding<CardType>, rootView: Content) {
+        hostingViewController = UIHostingController(rootView: rootView)
+        scrollView = nil
+        self.rootView = rootView
+        self._cardType = cardType
         
+        super.init(nibName: nil, bundle: nil)
         
-    }
-    
-    
-    
-    func insert<T>(view: T) where T: View {
-        //
-        addView(view: UIKitCardView(content:view))
-    }
-    
-    func insert(view: UIView) {
-        //subviews.forEach{$0.removeFromSuperview()}
-        addView(view: view)
-        
+        addChildViewController(hostingViewController)
+        view.addView(view: hostingViewController.view)
+        hostingViewController.didMove(toParent: self)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    var rootView: Content {
+        didSet {
+            hostingViewController.rootView = rootView
+        }
+    }
+    
+    func show<V>(view: V, full: Bool) where V: View {
+        scrollView?.removeFromSuperview()
+        if full {
+            scrollView = UIKitFullScreenCardView(cardType: $cardType, content: view, openedHeight: 100)
+            
+        } else {
+            scrollView = UIKitCardView(cardType: $cardType, content: view)
+        }
+        self.view.addView(view: scrollView!)
+    }
 }
 
 class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content : View {
     //var dismissed: ()->Void
+    func middleHeight() -> CGFloat { content.calculatedHeight() }
+    
+    @Binding var cardType: CardType
     
     let content: UIView
     
-    init(/*dismissed: @escaping ()->Void, */content: Content) {
+    init(cardType: Binding<CardType>, content: Content) {
         self.content = UIHostingController(rootView: content).view
         //self.dismissed = dismissed
+        self._cardType = cardType
         
         super.init(frame: .zero)
         
@@ -215,7 +228,7 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
     }
 
     private func moveToClosed() {
-        let contentheight = content.calculatedHeight()
+        let contentheight = middleHeight()
         if let sView = superview {
             var f = frame
             f.size.height = contentheight
@@ -225,7 +238,7 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
     }
     
     private func moveToBottom() {
-        let contentheight = content.calculatedHeight()
+        let contentheight = middleHeight()
         if let sView = superview {
             var f = frame
             f.size.height = contentheight
@@ -236,7 +249,7 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
 
     
     private func outOfOffset() -> Bool {
-        let contentheight = content.calculatedHeight()
+        let contentheight = middleHeight()
         if let sView = superview {
             var f = frame
             f.size.height = contentheight
@@ -257,12 +270,14 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
     var offsetReads: [(date: Date, offset:CGFloat)] = []
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-        let contentheight = self.content.calculatedHeight()
-        
         if isViewDragging == false {
             return
         }
+        cardDidScroll()
+    }
+    
+    func cardDidScroll() {
+        let contentheight = self.middleHeight()
         if contentOffset.y < 0  || (frame.origin.y > (superview?.frame.size.height ?? 0) - contentheight) {
             var f = frame
             f.origin.y -= contentOffset.y
@@ -291,7 +306,74 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
             speed = 0
         }
         
+        cardDidEndDragging(with: speed)
+    }
+    func cardDidEndDragging(with speed: CGFloat) {
         if outOfOffset() || speed > 800 {
+            UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
+                let contentheight = self.middleHeight()
+                if let sView = self.superview {
+                    var f = self.frame
+                    f.size.height = contentheight
+                    f.origin.y = sView.frame.size.height + (self.superview?.superview?.safeAreaInsets.bottom ?? 0)
+                    self.frame = f
+                }
+            }, completion: { finished in
+                    //self.dismissed()
+                self.cardType = .none
+                self.removeFromSuperview()
+            })
+            
+        } else {
+            UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
+                self.moveToBottom()
+            })
+        }
+    
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        isViewDragging = true
+    }
+}
+
+
+class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: View {
+    let openedHeight: CGFloat
+    
+    override func middleHeight() -> CGFloat {
+        openedHeight
+        
+    }
+    
+    private func exceedThereshold() -> Bool {
+        let contentheight = middleHeight()
+        if let sView = superview {
+            let shouldBeY = sView.frame.size.height - openedHeight
+            let itIsY = frame.origin.y
+            
+            if itIsY - shouldBeY > 70 {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    init(cardType: Binding<CardType>, content: Content, openedHeight: CGFloat) {
+        self.openedHeight = openedHeight
+        super.init(cardType: cardType, content: content)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    /*
+    override func cardDidEndDragging(with speed: CGFloat) {
+        
+        // where is closer to
+        if exceedThereshold() || speed > 800 {
             UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
                 let contentheight = self.content.calculatedHeight()
                 if let sView = self.superview {
@@ -302,6 +384,8 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
                 }
             }, completion: { finished in
                     //self.dismissed()
+                self.cardType = .none
+                self.removeFromSuperview()
             })
             
         } else {
@@ -309,9 +393,20 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
                 self.moveToBottom()
             })
         }
-    }
+    } */
     
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        isViewDragging = true
+    override func cardDidScroll() {
+        let contentheight = self.content.calculatedHeight()
+        if contentOffset.y < 0  || frame.origin.y > 0  {
+            var f = frame
+            f.origin.y -= contentOffset.y
+            frame = f
+
+            offsetReads.append((date: Date(), offset: frame.origin.y))
+
+            if offsetReads.count > 40 {
+                offsetReads.removeFirst()
+            }
+        }
     }
 }
