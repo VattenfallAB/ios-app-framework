@@ -23,7 +23,13 @@ extension CardView {
     func list() -> some View {
         //List {
           //  ForEach(1..<100) {_ in
-                Text("Example very long list")
+        ScrollView {
+         VStack {
+            ForEach(1..<100) {_ in
+                    Text("Example very long list")
+            }
+        }
+        }.edgesIgnoringSafeArea(.leading)
             //}
         //}.frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -290,9 +296,21 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
             }
         }
     }
-    
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        
         isViewDragging = false
+        targetContentOffset.pointee = CGPoint(x: 0, y: 0)
+    }
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+//        if decelerate {
+//
+//
+//            setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+//        }
+        
+        
+        
         
         let currentDate = Date()
         let revelentTimestamps = offsetReads.filter{abs($0.date.timeIntervalSince1970 - currentDate.timeIntervalSince1970)<0.1}
@@ -341,6 +359,9 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
 class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: View {
     let openedHeight: CGFloat
     
+    
+    private var isFullScreen = false
+    
     override func middleHeight() -> CGFloat {
         openedHeight
         
@@ -367,6 +388,25 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func cardDidEndDragging(with speed: CGFloat) {
+        //isScrollEnabled = false
+        //isUserInteractionEnabled = false
+        decelerationRate = UIScrollViewDecelerationRateFast
+        
+        //setContentOffset(CGPoint(x: 0, y: 0), animated: false)
+        
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
+            if let sView = self.superview {
+                var f = self.frame
+                f.size.height = sView.frame.size.height
+                f.origin.y = 20
+                self.frame = f
+            }
+            //self.contentOffset = CGPoint(x: 0, y: 0)
+        })
+        
     }
     
     /*
@@ -396,12 +436,16 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
     } */
     
     override func cardDidScroll() {
-        let contentheight = self.content.calculatedHeight()
-        if contentOffset.y < 0  || frame.origin.y > 0  {
+        let contentheight = middleHeight()
+        if contentOffset.y < 0  || frame.origin.y > 20  {
             var f = frame
             f.origin.y -= contentOffset.y
             frame = f
 
+            contentOffset.y = 0
+            
+            print(frame.origin.y)
+            
             offsetReads.append((date: Date(), offset: frame.origin.y))
 
             if offsetReads.count > 40 {
