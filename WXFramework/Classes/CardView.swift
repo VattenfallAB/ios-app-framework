@@ -138,7 +138,7 @@ class CardHolderViewController<Content>: UIViewController where Content: View {
     @Binding var cardType: CardType
     
     private let hostingViewController: UIHostingController<Content>
-    private var scrollView: UIScrollView?
+    private var scrollView: CardScrollView?
     init(cardType: Binding<CardType>, rootView: Content) {
         hostingViewController = UIHostingController(rootView: rootView)
         scrollView = nil
@@ -170,11 +170,28 @@ class CardHolderViewController<Content>: UIViewController where Content: View {
         } else {
             scrollView = UIKitCardView(cardType: $cardType, content: view)
         }
+        
         self.view.addView(view: scrollView!)
+        scrollView?.open()
+        
+    }
+//
+//    var didAppear = false
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+//        if didAppear == false {
+//
+//            didAppear = true
+//        }
+        print ("view did loaded")
     }
 }
 
-class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content : View {
+protocol CardScrollView: UIScrollView {
+    func open()
+}
+
+class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate where Content : View {
     //var dismissed: ()->Void
     func middleHeight() -> CGFloat { content.calculatedHeight() }
     
@@ -208,31 +225,28 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
         
         bottomLayer.backgroundColor = self.content.backgroundColor?.cgColor
         layer.addSublayer(bottomLayer)
+        
+        
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-        
-    var firstLayout = true
     
     let bottomLayer = CALayer()
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        if firstLayout {
-            moveToClosed()
-            
-            firstLayout = false
-            
-            UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
-                self.moveToBottom()
-            })
-            
-        }
         content.roundCorners(corners: [.topLeft, .topRight], radius: 12.0)
         bottomLayer.frame = CGRect(x: 0, y: content.frame.size.height, width: content.frame.size.width, height: 1000)
+    }
+    
+    func open() {
+        moveToClosed()
         
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
+            self.moveToBottom()
+        })
     }
 
     private func moveToClosed() {
