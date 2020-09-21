@@ -11,6 +11,8 @@ import UIKit
 import SwiftUI
 
 
+private let thereshold = CGFloat(70)
+
 extension CardView {
     func errorView(title:String) -> some View {
         VStack {
@@ -289,45 +291,41 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
             f.origin.y -= contentOffset.y
             frame = f
             
-            offsetReads.append((date: Date(), offset: frame.origin.y))
-            
-            if offsetReads.count > 40 {
-                offsetReads.removeFirst()
-            }
+        }
+        
+        let date = Date()
+        offsetReads.append((date: date, offset: frame.origin.y))
+        print(date)
+        
+        if offsetReads.count > 40 {
+            offsetReads.removeFirst()
         }
     }
+    
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        
         isViewDragging = false
-        targetContentOffset.pointee = CGPoint(x: 0, y: 0)
-    }
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        
-//        if decelerate {
-//
-//
-//            setContentOffset(CGPoint(x: 0, y: 0), animated: true)
-//        }
-        
-        
-        
-        
         let currentDate = Date()
+        print(currentDate)
         let revelentTimestamps = offsetReads.filter{abs($0.date.timeIntervalSince1970 - currentDate.timeIntervalSince1970)<0.1}
         
+        
+        offsetReads = []
+        
         let speed: CGFloat
-        if let firstTimestamp = revelentTimestamps.first, let lastTimestamp = revelentTimestamps.last, firstTimestamp != lastTimestamp {
-            let t = abs(firstTimestamp.date.timeIntervalSince1970 - lastTimestamp.date.timeIntervalSince1970)
-            let s = abs(firstTimestamp.offset - lastTimestamp.offset)
+        if let firstTimestamp = revelentTimestamps.first {
+            let t = abs(firstTimestamp.date.timeIntervalSince1970 - currentDate.timeIntervalSince1970)
+            let s = frame.origin.y - firstTimestamp.offset
             speed = s/CGFloat(t)
         } else {
             speed = 0
         }
         
-        cardDidEndDragging(with: speed)
+        print("Ended with speed: \(speed)")
+        cardWillEndDragging(with: speed, targetContentOffset: targetContentOffset)
     }
-    func cardDidEndDragging(with speed: CGFloat) {
-        if outOfOffset() || speed > 800 {
+    
+    func cardWillEndDragging(with speed: CGFloat, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        if outOfOffset() || abs(speed) > 800 {
             UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
                 let contentheight = self.middleHeight()
                 if let sView = self.superview {
@@ -352,33 +350,63 @@ class UIKitCardView<Content>: UIScrollView, UIScrollViewDelegate where Content :
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         isViewDragging = true
+        
+        let date = Date()
+        offsetReads.append((date: date, offset: frame.origin.y))
     }
 }
 
 
 class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: View {
     let openedHeight: CGFloat
+    private var viewState = ViewState.middle
+    override func middleHeight() -> CGFloat { openedHeight }
+    enum ViewState {case willClose, fullScreen, middle}
     
+    private enum ViewNextState{case same, up, down}
     
-    private var isFullScreen = false
-    
-    override func middleHeight() -> CGFloat {
-        openedHeight
-        
-    }
-    
-    private func exceedThereshold() -> Bool {
-        let contentheight = middleHeight()
+    private func nextThereshold() -> ViewState {
         if let sView = superview {
-            let shouldBeY = sView.frame.size.height - openedHeight
+            let shouldBeY: CGFloat
+            switch viewState {
+            case .fullScreen:
+                shouldBeY = 0
+            case .middle:
+                shouldBeY = sView.frame.size.height - openedHeight
+            default:
+                shouldBeY = sView.frame.size.height
+            }
+            
             let itIsY = frame.origin.y
             
-            if itIsY - shouldBeY > 70 {
-                return true
+            let next: ViewNextState
+            
+            
+            if itIsY - shouldBeY > thereshold {
+                next = .up
+            } else if itIsY - shouldBeY < thereshold {
+                next = .down
+            } else {
+                next = .same
+            }
+            
+            switch viewState {
+            case .fullScreen:
+                if next == .down {
+                    return .middle
+                }
+            case .middle:
+                if next == .down {
+                    return .willClose
+                } else if next == .up {
+                    return .fullScreen
+                }
+            default:
+                break
             }
         }
-        
-        return false
+
+        return viewState
     }
     
     init(cardType: Binding<CardType>, content: Content, openedHeight: CGFloat) {
@@ -390,50 +418,44 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func cardDidEndDragging(with speed: CGFloat) {
-        //isScrollEnabled = false
-        //isUserInteractionEnabled = false
-        decelerationRate = UIScrollViewDecelerationRateFast
+    override func cardWillEndDragging(with speed: CGFloat, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
-        //setContentOffset(CGPoint(x: 0, y: 0), animated: false)
-        
-        UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
-            if let sView = self.superview {
-                var f = self.frame
-                f.size.height = sView.frame.size.height
-                f.origin.y = 20
-                self.frame = f
-            }
-            //self.contentOffset = CGPoint(x: 0, y: 0)
-        })
-        
-    }
-    
-    /*
-    override func cardDidEndDragging(with speed: CGFloat) {
-        
-        // where is closer to
-        if exceedThereshold() || speed > 800 {
+        // Offset is exceeded or spped of scrolling down is big 
+        if nextThereshold() == .middle || ((viewState == .fullScreen) && speed < -800) {
             UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
-                let contentheight = self.content.calculatedHeight()
                 if let sView = self.superview {
                     var f = self.frame
-                    f.size.height = contentheight
+                    f.origin.y = sView.frame.size.height - self.openedHeight
+                    f.size.height = sView.frame.size.height
+                    self.frame = f
+                }
+            })
+            viewState = .middle
+        } else if nextThereshold() == .fullScreen || ((viewState == .middle) && (speed > 800)) {
+            UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
+                if let sView = self.superview {
+                    var f = self.frame
+                    f.size.height = sView.frame.size.height
+                    f.origin.y = 20
+                    self.frame = f
+                }
+            })
+            targetContentOffset.pointee = CGPoint(x: 0, y: 0)
+            viewState = .fullScreen
+        } else if nextThereshold() == .willClose || ((viewState == .middle) && (speed < -800)) {
+            UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
+                if let sView = self.superview {
+                    var f = self.frame
                     f.origin.y = sView.frame.size.height + (self.superview?.superview?.safeAreaInsets.bottom ?? 0)
                     self.frame = f
                 }
             }, completion: { finished in
-                    //self.dismissed()
                 self.cardType = .none
                 self.removeFromSuperview()
             })
-            
-        } else {
-            UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
-                self.moveToBottom()
-            })
         }
-    } */
+        
+    }
     
     override func cardDidScroll() {
         let contentheight = middleHeight()
@@ -444,13 +466,14 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
 
             contentOffset.y = 0
             
+            /*
             print(frame.origin.y)
             
             offsetReads.append((date: Date(), offset: frame.origin.y))
 
             if offsetReads.count > 40 {
                 offsetReads.removeFirst()
-            }
+            } */
         }
     }
 }
