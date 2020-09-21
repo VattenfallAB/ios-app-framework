@@ -466,14 +466,12 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
 
             contentOffset.y = 0
             
-            /*
-            print(frame.origin.y)
-            
-            offsetReads.append((date: Date(), offset: frame.origin.y))
+        }
+        
+        offsetReads.append((date: Date(), offset: frame.origin.y))
 
-            if offsetReads.count > 40 {
-                offsetReads.removeFirst()
-            } */
+        if offsetReads.count > 40 {
+            offsetReads.removeFirst()
         }
     }
 }
