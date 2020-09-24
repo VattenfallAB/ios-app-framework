@@ -27,7 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //                    Color.red.frame( minHeight: 100, idealHeight: 100, maxHeight: 100, alignment: .bottom)
 //                }
         
-        let contentView = BottomNavigationView(v1: {V1()}, v2: {V2()}, v3: {V3()}, v4: {V4()}, v5: {V5()})
+        let contentView = BottomNavigationView(v1: {V1($0)}, v2: {V2($0)}, v3: {V3($0)}, v4: {V4($0)}, v5: {V5($0)})
 
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)

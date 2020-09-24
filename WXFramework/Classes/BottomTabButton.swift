@@ -8,10 +8,9 @@
 
 import SwiftUI
 
-
 struct BottomTabButton: View {
     let title: String
-    let selected: Bool
+    var selected: Bool
     let iconName: String
     let action: ()->Void
     

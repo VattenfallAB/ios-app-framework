@@ -11,7 +11,8 @@ import UIKit
 import SwiftUI
 
 
-private let thereshold = CGFloat(70)
+private let thereshold = CGFloat(30)
+private let closingSpeed = CGFloat(400)
 
 extension CardView {
     func errorView(title:String) -> some View {
@@ -38,24 +39,12 @@ extension CardView {
 }
 
 
-enum CardType {
+public enum CardType {
     case error(title: String)
     case list
-    case any(view: AnyView)
+    case any(view: AnyView?)
+    case blocking(view: AnyView?)
     case none
-    /*
-    func create()-> some View {
-        switch self {
-        case .none:
-            return EmptyView()
-        default:
-            return Text("")
-        }
-    }*/
-}
-
-class CardState: ObservableObject {
-    @Published var cardType: CardType = .none
 }
 
 struct CardView<Content: View>: UIViewControllerRepresentable {
@@ -64,30 +53,35 @@ struct CardView<Content: View>: UIViewControllerRepresentable {
     
     var content: () -> Content
     
-    
     init(cardType: Binding<CardType>, @ViewBuilder content: @escaping () -> Content) {
         self._cardType = cardType
         self.content = content
     }
     
     func makeUIViewController(context: Context) -> CardHolderViewController<Content> {
-        return CardHolderViewController(cardType: $cardType,rootView: content())
+        let holerViewController = CardHolderViewController(cardType: $cardType,rootView: content())
+        holerViewController.view.clipsToBounds = true
+        return holerViewController
     }
     
     func updateUIViewController(_ viewController: CardHolderViewController<Content>, context: Context) {
         viewController.rootView = self.content()
-        
         
         switch cardType {
         case .error(let title):
             viewController.show(view: errorView(title: title), full: false)
         case .list:
             viewController.show(view:list() ,full: true)
-        case .none, .any:
+        case .any(let view):
+            viewController.show(view:view ,full: true)
+        case .blocking(let view):
+            viewController.show(view:view ,full: false)
+        case .none:
             break
+//        default:
+//            break
         }
     }
-    
 }
 
 private extension CALayer {
@@ -113,7 +107,6 @@ extension UIView {
     func addView(view: UIView) {
         addSubview(view)
         
-        
         let views: [String: UIView] = ["contentView": view]
         
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -129,9 +122,17 @@ extension UIView {
 
 extension UIView {
     func calculatedHeight() -> CGFloat {
-        return systemLayoutSizeFitting(CGSize(width: frame.size.width, height: 40)).height
+        return systemLayoutSizeFitting(CGSize(width: frame.size.width /* 375 */, height: 40)).height
     }
 }
+
+
+public extension View {
+    func cardType() -> CardType {
+        return .blocking(view: AnyView(self))
+    }
+}
+
 
 class CardHolderViewController<Content>: UIViewController where Content: View {
     
@@ -171,8 +172,13 @@ class CardHolderViewController<Content>: UIViewController where Content: View {
             scrollView = UIKitCardView(cardType: $cardType, content: view)
         }
         
-        self.view.addView(view: scrollView!)
-        scrollView?.open()
+        self.view.addSubview(scrollView!)
+        
+        self.view.setNeedsLayout()
+        self.view.layoutIfNeeded()
+        
+        self.scrollView?.open()
+
         
     }
 //
@@ -237,34 +243,58 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        content.roundCorners(corners: [.topLeft, .topRight], radius: 12.0)
-        bottomLayer.frame = CGRect(x: 0, y: content.frame.size.height, width: content.frame.size.width, height: 1000)
+        
+        let newFrame = CGRect(x: 0, y: content.frame.size.height, width: content.frame.size.width, height: 1000)
+        
+        if newFrame != bottomLayer.frame {
+            content.roundCorners(corners: [.topLeft, .topRight], radius: 12.0)
+            bottomLayer.frame = newFrame
+        }
+        
+        //print("layouted")
     }
     
     func open() {
+        print("opened")
         moveToClosed()
         
-        UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
+//        setNeedsLayout()
+//        layoutIfNeeded()
+        
+        
+        
+        
+        print(content.frame.size.width)
+        print(frame.size.width)
+        
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction], animations: {
             self.moveToBottom()
         })
     }
 
     private func moveToClosed() {
         let contentheight = middleHeight()
+        
         if let sView = superview {
             var f = frame
             f.size.height = contentheight
+            f.size.width = sView.frame.size.width
             f.origin.y = sView.frame.size.height
             frame = f
         }
     }
     
     private func moveToBottom() {
-        let contentheight = middleHeight()
         if let sView = superview {
+            // First execution forces layout or something, without this line middleHeight returns worng height
+            content.systemLayoutSizeFitting(CGSize(width: frame.size.width, height: 40)).height
+            let contentheight = middleHeight()
+            
             var f = frame
             f.size.height = contentheight
-            f.origin.y = sView.frame.size.height - contentheight
+            f.size.width = sView.frame.size.width
+            
+            f.origin.y = sView.frame.size.height - contentheight  - (self.superview?.superview?.safeAreaInsets.bottom ?? 0)
             frame = f
         }
     }
@@ -339,7 +369,7 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
     }
     
     func cardWillEndDragging(with speed: CGFloat, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        if outOfOffset() || abs(speed) > 800 {
+        if outOfOffset() || abs(speed) > closingSpeed {
             UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
                 let contentheight = self.middleHeight()
                 if let sView = self.superview {
@@ -384,7 +414,7 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
             let shouldBeY: CGFloat
             switch viewState {
             case .fullScreen:
-                shouldBeY = 0
+                shouldBeY = topSpace()
             case .middle:
                 shouldBeY = sView.frame.size.height - openedHeight
             default:
@@ -396,9 +426,9 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
             let next: ViewNextState
             
             
-            if itIsY - shouldBeY > thereshold {
+            if  shouldBeY - itIsY > thereshold {
                 next = .up
-            } else if itIsY - shouldBeY < thereshold {
+            } else if shouldBeY - itIsY < -1 * thereshold {
                 next = .down
             } else {
                 next = .same
@@ -434,30 +464,19 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
     
     override func cardWillEndDragging(with speed: CGFloat, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
-        // Offset is exceeded or spped of scrolling down is big 
-        if nextThereshold() == .middle || ((viewState == .fullScreen) && speed < -800) {
-            UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
+        let nextViewState = nextThereshold()
+        
+        if nextViewState == .fullScreen || ((viewState == .middle) && (speed < -closingSpeed)) {
+            UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction], animations: {
                 if let sView = self.superview {
                     var f = self.frame
-                    f.origin.y = sView.frame.size.height - self.openedHeight
-                    f.size.height = sView.frame.size.height
+                    f.size.height = sView.frame.size.height - self.topSpace()
+                    f.origin.y = self.topSpace()
                     self.frame = f
                 }
             })
-            viewState = .middle
-        } else if nextThereshold() == .fullScreen || ((viewState == .middle) && (speed > 800)) {
-            UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
-                if let sView = self.superview {
-                    var f = self.frame
-                    f.size.height = sView.frame.size.height
-                    f.origin.y = 20
-                    self.frame = f
-                }
-            })
-            targetContentOffset.pointee = CGPoint(x: 0, y: 0)
-            viewState = .fullScreen
-        } else if nextThereshold() == .willClose || ((viewState == .middle) && (speed < -800)) {
-            UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
+        } else if nextViewState == .willClose || ((viewState == .middle) && (speed > closingSpeed)) {
+            UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction], animations: {
                 if let sView = self.superview {
                     var f = self.frame
                     f.origin.y = sView.frame.size.height + (self.superview?.superview?.safeAreaInsets.bottom ?? 0)
@@ -467,13 +486,34 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
                 self.cardType = .none
                 self.removeFromSuperview()
             })
+        } else if nextViewState == .middle || ((viewState == .fullScreen) && speed > closingSpeed) {
+            UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction], animations: {
+                if let sView = self.superview {
+                    var f = self.frame
+                    f.origin.y = sView.frame.size.height - self.openedHeight
+                    f.size.height = sView.frame.size.height
+                    self.frame = f
+                }
+            })
         }
         
+        
+        if viewState != .fullScreen {
+            targetContentOffset.pointee = CGPoint(x: 0, y: 0)
+        }
+        
+        viewState = nextViewState
+        
+        if viewState != .fullScreen {
+            showsVerticalScrollIndicator = false
+        } else {
+            showsVerticalScrollIndicator = true
+        }
     }
     
     override func cardDidScroll() {
         let contentheight = middleHeight()
-        if contentOffset.y < 0  || frame.origin.y > 20  {
+        if (contentOffset.y < 0  || frame.origin.y > topSpace()) {
             var f = frame
             f.origin.y -= contentOffset.y
             frame = f
@@ -487,5 +527,9 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
         if offsetReads.count > 40 {
             offsetReads.removeFirst()
         }
+    }
+    
+    func topSpace() -> CGFloat {
+        return 50
     }
 }

@@ -8,15 +8,12 @@
 
 import SwiftUI
 
-public class II {
-    public init() {
-        
-    }
+public protocol TabRootView: View {
+    static var tabName: String {get}
+    //public init(tabBarViewState: TabBarViewState)
 }
 
-protocol TabRootView: View {
-    
-}
+public enum TabItem { case t1, t2, t3, t4, t5}
 
 struct Style {
     static var vfBlack = Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 34.0 / 255.0)
@@ -24,153 +21,155 @@ struct Style {
     static var vfGray = Color(red: 169.0 / 255.0, green: 169.0 / 255.0, blue: 169.0 / 255.0)
 }
 
-public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2: View, T3: View, T4: View, T5: View {
-    
-    enum TabItem { case map, sessions, charge, favourities, more }
-    
-    @State var selectedTab: TabItem = .map
+public class BottomNavigationState: ObservableObject {
+    @Published public var cardType: CardType = .none
+    @Published public var selected: TabItem = .t1
+}
 
+public class TabState: ObservableObject {
+    @Published public var cardType: CardType = .none
+    @Published public var isSelected = false
+    @Published public var icon: Image?
+}
+
+public class TabBarItem {
+    public let bottomNavigationState: BottomNavigationState
+    public let tabState: TabState
+    fileprivate init (bottomNavigationState: BottomNavigationState, tabState: TabState) {
+        self.bottomNavigationState = bottomNavigationState
+        self.tabState = tabState
+    }
+}
+
+public struct TabStateEnvironmentKey: EnvironmentKey {
+    public static let defaultValue = TabState()
+}
+
+public extension EnvironmentValues {
+    var tabState: TabState {
+        get { self[TabStateEnvironmentKey.self] }
+        set { self[TabStateEnvironmentKey.self] = newValue }
+    }
+}
+
+public struct BottomNavigationStateEnvironmentKey: EnvironmentKey {
+    public static let defaultValue = BottomNavigationState()
+}
+
+public extension EnvironmentValues {
+    var bottomNavigationState: BottomNavigationState {
+        get { self[BottomNavigationStateEnvironmentKey.self] }
+        set { self[BottomNavigationStateEnvironmentKey.self] = newValue }
+    }
+}
+
+public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: TabRootView, T2: TabRootView, T3: TabRootView, T4: TabRootView, T5: TabRootView {
+    
     let v1: T1
     let v2: T2
     let v3: T3
     let v4: T4
     let v5: T5
     
-    public init(@ViewBuilder v1: () -> T1, @ViewBuilder v2: () -> T2, @ViewBuilder v3: () -> T3, @ViewBuilder v4: () -> T4, @ViewBuilder v5: () -> T5) {
-        self.v1 = v1()
-        self.v2 = v2()
-        self.v3 = v3()
-        self.v4 = v4()
-        self.v5 = v5()
+    public init(@ViewBuilder v1: (TabBarItem) -> T1, @ViewBuilder v2: (TabBarItem) -> T2, @ViewBuilder v3: (TabBarItem) -> T3, @ViewBuilder v4: (TabBarItem) -> T4, @ViewBuilder v5: (TabBarItem) -> T5) {
+        
+        
+        let v1TabState = TabState()
+        let v2TabState = TabState()
+        let v3TabState = TabState()
+        let v4TabState = TabState()
+        let v5TabState = TabState()
+        
+        self.v1TabState = v1TabState
+        self.v2TabState = v2TabState
+        self.v3TabState = v3TabState
+        self.v4TabState = v4TabState
+        self.v5TabState = v5TabState
+        
+        let bottomNavigationState = BottomNavigationState()
+        
+        self.bottomNavigationState = bottomNavigationState
+        
+        self.v1 = v1(TabBarItem(bottomNavigationState: bottomNavigationState, tabState: v1TabState))
+        self.v2 = v2(TabBarItem(bottomNavigationState: bottomNavigationState, tabState: v2TabState))
+        self.v3 = v3(TabBarItem(bottomNavigationState: bottomNavigationState, tabState: v3TabState))
+        self.v4 = v4(TabBarItem(bottomNavigationState: bottomNavigationState, tabState: v4TabState))
+        self.v5 = v5(TabBarItem(bottomNavigationState: bottomNavigationState, tabState: v5TabState))
+        
+
     }
     
-    @State private var blockingCardView: CardView<AnyView>?
+    @ObservedObject var bottomNavigationState: BottomNavigationState
     
-    @ObservedObject var mainCardState = CardState()
-    //@ObservedObject var mainCardType = CardType.none
-    
-    //@EnvironmentObject private var mainCardState: CardState
-    
+    @ObservedObject var v1TabState: TabState
+    @ObservedObject var v2TabState: TabState
+    @ObservedObject var v3TabState: TabState
+    @ObservedObject var v4TabState: TabState
+    @ObservedObject var v5TabState: TabState
     
     public var body: some View {
         
-        CardView(cardType: $mainCardState.cardType) {
+        CardView(cardType: $bottomNavigationState.cardType) {
                 VStack {
                     
                     ZStack {
                         
                         Group {
                             
-                            if self.selectedTab == .map {
-                                
-                                
-                                            ZStack {
-            //                                    CardView(dismissed: dismissed) {
-                                                self.v1
-            //                                    }
-                                                VStack {
-                                                    Button(action: {
-                                                        self.mainCardState.cardType = .error(title:"sdc")
-                                                        
-                                                    }, label: {Text("Show error card")})
-                                                    
-                                                    Button(action: {
-                                                        self.mainCardState.cardType = .list
-                                                        
-                                                    }, label: {Text("Show list")})
-                                                }
-                                                 
-                                                
-                                                                }
-                            } else if self.selectedTab == .sessions {
-                                self.v2
-                            } else if self.selectedTab == .charge {
-                                self.v3
-                            } else if self.selectedTab == .favourities {
-                                self.v4
-                            } else if self.selectedTab == .more {
-                                self.v5
+                            if self.bottomNavigationState.selected == .t1 {
+                                CardView(cardType: $v1TabState.cardType) {
+                                    self.v1.environment(\.tabState, v1TabState)
+                                }
+                            } else if self.bottomNavigationState.selected == .t2 {
+                                CardView(cardType: $v2TabState.cardType) {
+                                    self.v2.environment(\.tabState, v2TabState)
+                                }
+                            } else if self.bottomNavigationState.selected == .t3 {
+                                CardView(cardType: $v3TabState.cardType) {
+                                    self.v3.environment(\.tabState, v3TabState)
+                                }
+                            } else if self.bottomNavigationState.selected == .t4 {
+                                CardView(cardType: $v4TabState.cardType) {
+                                    self.v4.environment(\.tabState, v4TabState)
+                                }
+                            } else if self.bottomNavigationState.selected == .t5 {
+                                CardView(cardType: $v5TabState.cardType) {
+                                    self.v5.environment(\.tabState, v5TabState)
+                                }
                             }
                         }
-                    }
+                    }.edgesIgnoringSafeArea(.top).environment(\.bottomNavigationState, bottomNavigationState)
 
                     Spacer(minLength: 0)
                     VStack(alignment: .center, spacing: 0) {
                         Style.vfGray.frame(minHeight: 0.5, idealHeight: 0.5, maxHeight: 0.5)
                             
                         HStack {
-                            BottomTabButton(title: "Map", selected: self.selectedTab == .map, iconName: "ic_map_bottom_navigation", action: {
-                                self.selectedTab = .map
+                            BottomTabButton(title: T1.tabName, selected: bottomNavigationState.selected == .t1, iconName: "ic_map_bottom_navigation", action: {
+                                self.bottomNavigationState.selected = .t1
                                 
                             })
-                            BottomTabButton(title: "Sessions", selected: self.selectedTab == .sessions, iconName: "ic_sessions_bottom_navigation", action: {
-                                self.selectedTab = .sessions
+                            BottomTabButton(title: T2.tabName, selected: bottomNavigationState.selected == .t2, iconName: "ic_sessions_bottom_navigation", action: {
+                                self.bottomNavigationState.selected = .t2
                             })
                             ZStack {
                                 Image("ic_circle_bottom_navigation").offset(x: 0, y: -7)
-                                BottomTabButton(title: "Charge", selected: self.selectedTab == .charge, iconName: "ic_charging_slow", action: {
-                                    self.selectedTab = .charge
+                                BottomTabButton(title: T3.tabName, selected: bottomNavigationState.selected == .t3, iconName: "ic_charging_slow", action: {
+                                    self.bottomNavigationState.selected = .t3
                                 })
                             }
                             
-                            BottomTabButton(title: "Favourites", selected: self.selectedTab == .favourities, iconName: "ic_star", action: {
-                                self.selectedTab = .favourities
+                            BottomTabButton(title: T4.tabName, selected: bottomNavigationState.selected == .t4, iconName: "ic_star", action: {
+                                self.bottomNavigationState.selected = .t4
                             })
-                            BottomTabButton(title: "More", selected: self.selectedTab == .more, iconName: "ic_more_bottom_navigation", action: {
-                                self.selectedTab = .more
+                            BottomTabButton(title: T5.tabName, selected: bottomNavigationState.selected == .t5, iconName: "ic_more_bottom_navigation", action: {
+                                self.bottomNavigationState.selected = .t5
                             })
-                                
                         }
                     }
                     
                 }
-                
-//                Group {
-//    //            Rectangle().background(Color.black).opacity(0.2).disabled(true)
-//                    //
-//                    if cardType == .some {
-//
-//
-//                        //Color.black.opacity(0.2).edgesIgnoringSafeArea(.all)
-//
-//
-//                        /*.clipShape(Circle()).contentShape(HitTestingShape())*/
-//                        //.opacity(0.5)
-//                    }
-//
-//                    //if cardType == .none {
-//
-//                    //} else {
-//                     //   Text("")
-//                    //}
-//                    //Rectangle().allowsHitTesting(true)
-//                }//.contentShape(HitTestingShape())
-                
-           // }.edgesIgnoringSafeArea(.top)
-        }.edgesIgnoringSafeArea(.top)
+        }
+        .edgesIgnoringSafeArea(.top)
     }
-
-//    func dismissed() {
-//        cardType = .none
-//    }
 }
-
-
-//struct ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        BottomNavigationView(v1: {V1()}, v2: {V2()}, v3: {V3()}, v4: {V4()}, v5: {V5()})
-//    }
-//}
-
-
-//struct CardViews: View {
-//    var body: some View {
-//       Group {
-//           switch containedView {
-//              case .home: HomeView()
-//              case .categories: CategoriesView()
-//              ...
-//           }
-//       }
-//    }
-//}
