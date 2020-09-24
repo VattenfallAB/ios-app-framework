@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,7 +13,7 @@
 		50B76E21C5AFB25AAE92BE555D911509 /* Pods-WXFramework_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 954FFD353525DB1F8F565FCE1A7EB463 /* Pods-WXFramework_Example-dummy.m */; };
 		6943ADE9A06882AEF0A513D9598CD2AD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
 		7DE8AF8B64EF1C18A1A8FD8A1E25646B /* BottomTabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108A036323857A18F4C8952B60C44972 /* BottomTabButton.swift */; };
-		7DEB00796C33871149960D3771D64B52 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
+		7DEB00796C33871149960D3771D64B52 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; platformFilter = ios; };
 		802F9AC75EE1B3631870EF9561C604FF /* Pods-WXFramework_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = A54A5D3C9005FB5B7302B4FB1418971A /* Pods-WXFramework_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8424A0917228F61204AE697A367BD83F /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F22E1DE7DCB4485E11917024CB8980 /* CardView.swift */; };
 		9129CEE0C25AB09BC2709FCCB1A51F7E /* Pods-WXFramework_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = C1B7DC925D2491060747C59A0AC48A4D /* Pods-WXFramework_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -58,25 +58,25 @@
 		789A9239F15888E2D93124898F7E8743 /* Pods-WXFramework_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-WXFramework_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		7945AA3154EB3FE42D715DCA0BB99072 /* Pods-WXFramework_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-WXFramework_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		7FD365EDBF3E3A7DDA3E038EE14DF2F3 /* Pods-WXFramework_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-WXFramework_Tests.modulemap"; sourceTree = "<group>"; };
-		8961AD8AD81608A5897B5CFD85EE828E /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
-		8CA2EC617D4695549096D8C6FBB9D80B /* Pods_WXFramework_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_WXFramework_Example.framework; path = "Pods-WXFramework_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8961AD8AD81608A5897B5CFD85EE828E /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		8CA2EC617D4695549096D8C6FBB9D80B /* Pods_WXFramework_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WXFramework_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D611156725D12ED91CA6ACA92CE735A /* BlockingCardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BlockingCardView.swift; path = WXFramework/Classes/BlockingCardView.swift; sourceTree = "<group>"; };
 		9142B42B2F8BFC91ED6C0A73F4CD8522 /* BottomNavigationView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BottomNavigationView.swift; path = WXFramework/Classes/BottomNavigationView.swift; sourceTree = "<group>"; };
 		954FFD353525DB1F8F565FCE1A7EB463 /* Pods-WXFramework_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-WXFramework_Example-dummy.m"; sourceTree = "<group>"; };
 		977F77B2A0D3ABB6D235047A9955924E /* Pods-WXFramework_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-WXFramework_Example-frameworks.sh"; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A54A5D3C9005FB5B7302B4FB1418971A /* Pods-WXFramework_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-WXFramework_Example-umbrella.h"; sourceTree = "<group>"; };
 		A74629F64FE534309D1FE62C869DB638 /* Pods-WXFramework_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-WXFramework_Example-Info.plist"; sourceTree = "<group>"; };
-		ACCA19252870F3C8B6F5D85E5252B45E /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		ACCA19252870F3C8B6F5D85E5252B45E /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		B7579B15D9CDA6C2908626BDC8DB8973 /* Pods-WXFramework_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-WXFramework_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		C1B7DC925D2491060747C59A0AC48A4D /* Pods-WXFramework_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-WXFramework_Tests-umbrella.h"; sourceTree = "<group>"; };
 		CA13164A4EA143F32A68E370F2B3C949 /* WXFramework-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "WXFramework-prefix.pch"; sourceTree = "<group>"; };
 		CB7641A189D83379FB96ED980F159C5D /* Pods-WXFramework_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-WXFramework_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		D76CBE849FE38D66878718ACBFE0642A /* WXFramework.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = WXFramework.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		D78BBB9350C8D05B9105C5682CDB6EA7 /* WXFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = WXFramework.framework; path = WXFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D76CBE849FE38D66878718ACBFE0642A /* WXFramework.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = WXFramework.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		D78BBB9350C8D05B9105C5682CDB6EA7 /* WXFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WXFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7954DCCB827D04FCAC5DEFE825DEE50 /* Pods-WXFramework_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-WXFramework_Example.release.xcconfig"; sourceTree = "<group>"; };
 		DA9AE51BBA6D50B856D1B3C81F4DE843 /* WXFramework-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "WXFramework-dummy.m"; sourceTree = "<group>"; };
-		E4CD47B71A6F609E6C67048B80A30EAF /* Pods_WXFramework_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_WXFramework_Tests.framework; path = "Pods-WXFramework_Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4CD47B71A6F609E6C67048B80A30EAF /* Pods_WXFramework_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WXFramework_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F38A09C82FEABCD1658D383CB53B16DE /* ReplaceMe.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReplaceMe.swift; path = WXFramework/Classes/ReplaceMe.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -474,6 +474,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -514,6 +515,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -552,6 +554,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -590,6 +593,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -625,6 +629,7 @@
 				PRODUCT_NAME = WXFramework;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -661,6 +666,7 @@
 				PRODUCT_NAME = WXFramework;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -702,6 +708,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -765,6 +772,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
