@@ -148,7 +148,7 @@ class CardHolderViewController<Content>: UIViewController where Content: View {
         
         super.init(nibName: nil, bundle: nil)
         
-        addChildViewController(hostingViewController)
+        addChild(hostingViewController)
         view.addView(view: hostingViewController.view)
         hostingViewController.didMove(toParent: self)
     }
