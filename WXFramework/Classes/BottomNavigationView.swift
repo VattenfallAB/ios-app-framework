@@ -8,10 +8,6 @@
 
 import SwiftUI
 
-public protocol TabRootView: View {
-    static var tabName: String {get}
-    //public init(tabBarViewState: TabBarViewState)
-}
 
 public enum TabItem { case t1, t2, t3, t4, t5}
 
@@ -30,6 +26,7 @@ public class TabState: ObservableObject {
     @Published public var cardType: CardType = .none
     @Published public var isSelected = false
     @Published public var icon: Image?
+    @Published public var tabName: String = ""
 }
 
 public class TabBarItem {
@@ -63,7 +60,7 @@ public extension EnvironmentValues {
     }
 }
 
-public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: TabRootView, T2: TabRootView, T3: TabRootView, T4: TabRootView, T5: TabRootView {
+public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2: View, T3: View, T4: View, T5: View {
     
     let v1: T1
     let v2: T2
@@ -71,7 +68,12 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: TabRootVi
     let v4: T4
     let v5: T5
     
-    public init(@ViewBuilder v1: (TabBarItem) -> T1, @ViewBuilder v2: (TabBarItem) -> T2, @ViewBuilder v3: (TabBarItem) -> T3, @ViewBuilder v4: (TabBarItem) -> T4, @ViewBuilder v5: (TabBarItem) -> T5) {
+    public init(
+        @ViewBuilder v1: (TabBarItem) -> T1,
+        @ViewBuilder v2: (TabBarItem) -> T2,
+        @ViewBuilder v3: (TabBarItem) -> T3,
+        @ViewBuilder v4: (TabBarItem) -> T4,
+        @ViewBuilder v5: (TabBarItem) -> T5) {
         
         
         let v1TabState = TabState()
@@ -117,52 +119,52 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: TabRootVi
                         Group {
                             
                             if self.bottomNavigationState.selected == .t1 {
-                                CardView(cardType: $v1TabState.cardType) {
-                                    self.v1.environment(\.tabState, v1TabState)
+                                CardView(cardType: self.$v1TabState.cardType) {
+                                    self.v1.environment(\.tabState, self.v1TabState)
                                 }
                             } else if self.bottomNavigationState.selected == .t2 {
-                                CardView(cardType: $v2TabState.cardType) {
-                                    self.v2.environment(\.tabState, v2TabState)
+                                CardView(cardType: self.$v2TabState.cardType) {
+                                    self.v2.environment(\.tabState, self.v2TabState)
                                 }
                             } else if self.bottomNavigationState.selected == .t3 {
-                                CardView(cardType: $v3TabState.cardType) {
-                                    self.v3.environment(\.tabState, v3TabState)
+                                CardView(cardType: self.$v3TabState.cardType) {
+                                    self.v3.environment(\.tabState, self.v3TabState)
                                 }
                             } else if self.bottomNavigationState.selected == .t4 {
-                                CardView(cardType: $v4TabState.cardType) {
-                                    self.v4.environment(\.tabState, v4TabState)
+                                CardView(cardType: self.$v4TabState.cardType) {
+                                    self.v4.environment(\.tabState, self.v4TabState)
                                 }
                             } else if self.bottomNavigationState.selected == .t5 {
-                                CardView(cardType: $v5TabState.cardType) {
-                                    self.v5.environment(\.tabState, v5TabState)
+                                CardView(cardType: self.$v5TabState.cardType) {
+                                    self.v5.environment(\.tabState, self.v5TabState)
                                 }
                             }
                         }
-                    }.edgesIgnoringSafeArea(.top).environment(\.bottomNavigationState, bottomNavigationState)
+                    }.edgesIgnoringSafeArea(.top).environment(\.bottomNavigationState, self.bottomNavigationState)
 
                     Spacer(minLength: 0)
                     VStack(alignment: .center, spacing: 0) {
                         Style.vfGray.frame(minHeight: 0.5, idealHeight: 0.5, maxHeight: 0.5)
                             
                         HStack {
-                            BottomTabButton(title: T1.tabName, selected: bottomNavigationState.selected == .t1, iconName: "ic_map_bottom_navigation", action: {
+                            BottomTabButton(title: self.v1TabState.tabName, selected: self.bottomNavigationState.selected == .t1, iconName: "ic_map_bottom_navigation", action: {
                                 self.bottomNavigationState.selected = .t1
                                 
                             })
-                            BottomTabButton(title: T2.tabName, selected: bottomNavigationState.selected == .t2, iconName: "ic_sessions_bottom_navigation", action: {
+                            BottomTabButton(title: self.v2TabState.tabName, selected: self.bottomNavigationState.selected == .t2, iconName: "ic_sessions_bottom_navigation", action: {
                                 self.bottomNavigationState.selected = .t2
                             })
                             ZStack {
                                 Image("ic_circle_bottom_navigation").offset(x: 0, y: -7)
-                                BottomTabButton(title: T3.tabName, selected: bottomNavigationState.selected == .t3, iconName: "ic_charging_slow", action: {
+                                BottomTabButton(title: self.v3TabState.tabName, selected: self.bottomNavigationState.selected == .t3, iconName: "ic_charging_slow", action: {
                                     self.bottomNavigationState.selected = .t3
                                 })
                             }
                             
-                            BottomTabButton(title: T4.tabName, selected: bottomNavigationState.selected == .t4, iconName: "ic_star", action: {
+                            BottomTabButton(title: self.v4TabState.tabName, selected: self.bottomNavigationState.selected == .t4, iconName: "ic_star", action: {
                                 self.bottomNavigationState.selected = .t4
                             })
-                            BottomTabButton(title: T5.tabName, selected: bottomNavigationState.selected == .t5, iconName: "ic_more_bottom_navigation", action: {
+                            BottomTabButton(title: self.v5TabState.tabName, selected: self.bottomNavigationState.selected == .t5, iconName: "ic_more_bottom_navigation", action: {
                                 self.bottomNavigationState.selected = .t5
                             })
                         }

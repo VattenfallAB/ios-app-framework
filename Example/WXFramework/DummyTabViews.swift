@@ -41,7 +41,7 @@ class MapViewModel: ObservableObject {
     }
 }
 
-struct V1: TabRootView {
+struct V1: View {
     static var tabName = "Map"
     
     var viewModel: MapViewModel
@@ -86,7 +86,7 @@ struct V1: TabRootView {
 //                                                        self.mainCardState.cardType = .list
                     //mainCardState.cardType = .list
                    // viewModel.example = true
-                    c = true
+                   // c = true
                 }, label: {Text("Show list")})
                 
                 Button(action: {
@@ -95,7 +95,7 @@ struct V1: TabRootView {
                     
                     //mainCardState.cardType = .error(title: "re")
                    // viewModel.example = false
-                    c = false
+                 //   c = false//
                 }, label: {Text("Show list inside map view")})
             }
         }
@@ -107,13 +107,14 @@ class ViewModel {
 }
 
 
-struct V2: TabRootView {
+struct V2: View {
     @Environment(\.bottomNavigationState) var bottomNavigationState
     
     let tabBarItem: TabBarItem
     
     init(_ tabBarItem: TabBarItem) {
         self.tabBarItem = tabBarItem
+        tabBarItem.tabState.tabName = "Map"
     }
     
     static var tabName = "View 2"
@@ -123,7 +124,7 @@ struct V2: TabRootView {
                 Button(action: {
                     
                     
-                    tabBarItem.tabState.cardType = card(title: "title").cardType()
+                  //  tabBarItem.tabState.cardType = card(title: "title").cardType()
                     //bottomNavigationState.cardType = .any(view: AnyView(Text("asjdfnv adsjkif vnsdkaf vjnsbd lfvij ")))
                     
                     //tabBarItem.tabState.cardType = .error(title: "sadfd")
@@ -146,7 +147,7 @@ struct V2: TabRootView {
         }
     }
 }
-struct V3: TabRootView {
+struct V3: View {
     
     let tabBarItem: TabBarItem
     
@@ -161,7 +162,7 @@ struct V3: TabRootView {
             .edgesIgnoringSafeArea(.all)
     }
 }
-struct V4: TabRootView {
+struct V4: View {
     @Environment(\.bottomNavigationState) var bottomNavigationState
     
     let tabBarItem: TabBarItem
@@ -173,7 +174,7 @@ struct V4: TabRootView {
     static var tabName = "Hsvsvejo"
     var body: some View {
         Button(action: {
-            bottomNavigationState.selected = .t1
+           // bottomNavigationState.selected = .t1
             NotificationCenter.default.post(name: .chargingStation, object: "test")
         }, label: {
             Text("V4")
@@ -200,7 +201,7 @@ extension NSNotification.Name {
     static let chargingStation = Self("NSNotification.Name")
 }
 
-struct V5: TabRootView {
+struct V5: View {
     static var tabName = "fff"
     
     let tabBarItem: TabBarItem
