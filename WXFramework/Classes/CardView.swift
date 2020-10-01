@@ -42,7 +42,7 @@ extension CardView {
 public enum CardType {
     case error(title: String)
     case list
-    case any(view: AnyView?)
+    case any(view: AnyView?, openedHeight: CGFloat)
     case blocking(view: AnyView?)
     case none
 }
@@ -72,8 +72,8 @@ struct CardView<Content: View>: UIViewControllerRepresentable {
             viewController.show(view: errorView(title: title), full: false)
         case .list:
             viewController.show(view:list() ,full: true)
-        case .any(let view):
-            viewController.show(view:view ,full: true)
+        case .any(let view, let openedHeight):
+            viewController.show(view:view ,full: true, openedHeight: openedHeight)
         case .blocking(let view):
             viewController.show(view:view ,full: false)
         case .none:
@@ -128,7 +128,10 @@ extension UIView {
 
 
 public extension View {
-    func cardType() -> CardType {
+    func cardType(isFixedHeight: Bool = true, isBlocking: Bool = false, isFullScreen: Bool = false, openedHeight: CGFloat = 100) -> CardType {
+        if isFullScreen {
+            return .any(view: AnyView(self), openedHeight: openedHeight)
+        }
         return .blocking(view: AnyView(self))
     }
 }
@@ -163,16 +166,18 @@ class CardHolderViewController<Content>: UIViewController where Content: View {
         }
     }
     
-    func show<V>(view: V, full: Bool) where V: View {
+    func show<V>(view: V, full: Bool, openedHeight: CGFloat = 100) where V: View {
         scrollView?.removeFromSuperview()
         if full {
-            scrollView = UIKitFullScreenCardView(cardType: $cardType, content: view, openedHeight: 100)
+            scrollView = UIKitFullScreenCardView(cardType: $cardType, content: view, openedHeight: openedHeight)
             
         } else {
             scrollView = UIKitCardView(cardType: $cardType, content: view)
         }
         
         self.view.addSubview(scrollView!)
+        
+        scrollView?.contentSize = CGSize(width: 1000, height: 1000)
         
         self.view.setNeedsLayout()
         self.view.layoutIfNeeded()
