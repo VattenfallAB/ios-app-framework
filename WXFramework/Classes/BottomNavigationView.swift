@@ -139,8 +139,11 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
                                     self.v5.environment(\.tabState, self.v5TabState)
                                 }
                             }
-                        }
-                    }.edgesIgnoringSafeArea(.top).environment(\.bottomNavigationState, self.bottomNavigationState)
+                        }//.edgesIgnoringSafeArea(.all)
+                    }
+                    //.edgesIgnoringSafeArea(.all)
+                    //.edgesIgnoringSafeArea(.top)
+                    .environment(\.bottomNavigationState, self.bottomNavigationState)
 
                     Spacer(minLength: 0)
                     VStack(alignment: .center, spacing: 0) {
@@ -168,10 +171,13 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
                                 self.bottomNavigationState.selected = .t5
                             })
                         }
+                        
+                        Color.white.frame(height: UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0)
                     }
                     
                 }
+                .edgesIgnoringSafeArea(.all)
         }
-        .edgesIgnoringSafeArea(.top)
+       // .edgesIgnoringSafeArea(.all)
     }
 }

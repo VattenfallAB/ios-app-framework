@@ -194,7 +194,7 @@ class CardHolderViewController<Content>: UIViewController where Content: View {
 //
 //            didAppear = true
 //        }
-        print ("view did loaded")
+       // print ("view did loaded")
     }
 }
 
@@ -251,6 +251,7 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
         
         let newFrame = CGRect(x: 0, y: content.frame.size.height, width: content.frame.size.width, height: 1000)
         
+        
         if newFrame != bottomLayer.frame {
             content.roundCorners(corners: [.topLeft, .topRight], radius: 12.0)
             bottomLayer.frame = newFrame
@@ -260,17 +261,17 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
     }
     
     func open() {
-        print("opened")
+       // print("opened")
         moveToClosed()
         
 //        setNeedsLayout()
 //        layoutIfNeeded()
         
         
-        
-        
-        print(content.frame.size.width)
-        print(frame.size.width)
+//
+//
+//        print(content.frame.size.width)
+//        print(frame.size.width)
         
         UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction], animations: {
             self.moveToBottom()
@@ -344,7 +345,7 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
         
         let date = Date()
         offsetReads.append((date: date, offset: frame.origin.y))
-        print(date)
+        //print(date)
         
         if offsetReads.count > 40 {
             offsetReads.removeFirst()
@@ -354,7 +355,7 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         isViewDragging = false
         let currentDate = Date()
-        print(currentDate)
+        //print(currentDate)
         let revelentTimestamps = offsetReads.filter{abs($0.date.timeIntervalSince1970 - currentDate.timeIntervalSince1970)<0.1}
         
         
@@ -369,7 +370,7 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
             speed = 0
         }
         
-        print("Ended with speed: \(speed)")
+        //print("Ended with speed: \(speed)")
         cardWillEndDragging(with: speed, targetContentOffset: targetContentOffset)
     }
     
