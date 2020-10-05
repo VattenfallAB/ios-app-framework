@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-
+import Combine
 
 public enum TabItem { case t1, t2, t3, t4, t5}
 
@@ -19,11 +19,13 @@ struct Style {
 
 public class BottomNavigationState: ObservableObject {
     @Published public var cardType: CardType = .none
+    public var cardHeight = PassthroughSubject<CGFloat, Never>()
     @Published public var selected: TabItem = .t1
 }
 
 public class TabState: ObservableObject {
     @Published public var cardType: CardType = .none
+    public var cardHeight = PassthroughSubject<CGFloat, Never>()
     @Published public var isSelected = false
     @Published public var icon: Image?
     @Published public var tabName: String = ""
@@ -111,38 +113,34 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
     
     public var body: some View {
         
-        CardView(cardType: $bottomNavigationState.cardType) {
+        CardView(cardType: $bottomNavigationState.cardType, cardHeight: bottomNavigationState.cardHeight) {
                 VStack {
-                    
                     ZStack {
-                        
                         Group {
                             
                             if self.bottomNavigationState.selected == .t1 {
-                                CardView(cardType: self.$v1TabState.cardType) {
+                                CardView(cardType: self.$v1TabState.cardType, cardHeight: self.v1TabState.cardHeight) {
                                     self.v1.environment(\.tabState, self.v1TabState)
                                 }
                             } else if self.bottomNavigationState.selected == .t2 {
-                                CardView(cardType: self.$v2TabState.cardType) {
+                                CardView(cardType: self.$v2TabState.cardType, cardHeight: self.v2TabState.cardHeight) {
                                     self.v2.environment(\.tabState, self.v2TabState)
                                 }
                             } else if self.bottomNavigationState.selected == .t3 {
-                                CardView(cardType: self.$v3TabState.cardType) {
+                                CardView(cardType: self.$v3TabState.cardType, cardHeight: self.v3TabState.cardHeight) {
                                     self.v3.environment(\.tabState, self.v3TabState)
                                 }
                             } else if self.bottomNavigationState.selected == .t4 {
-                                CardView(cardType: self.$v4TabState.cardType) {
+                                CardView(cardType: self.$v4TabState.cardType, cardHeight: self.v4TabState.cardHeight) {
                                     self.v4.environment(\.tabState, self.v4TabState)
                                 }
                             } else if self.bottomNavigationState.selected == .t5 {
-                                CardView(cardType: self.$v5TabState.cardType) {
+                                CardView(cardType: self.$v5TabState.cardType, cardHeight: self.v5TabState.cardHeight) {
                                     self.v5.environment(\.tabState, self.v5TabState)
                                 }
                             }
-                        }//.edgesIgnoringSafeArea(.all)
+                        }
                     }
-                    //.edgesIgnoringSafeArea(.all)
-                    //.edgesIgnoringSafeArea(.top)
                     .environment(\.bottomNavigationState, self.bottomNavigationState)
 
                     Spacer(minLength: 0)
@@ -152,7 +150,6 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
                         HStack {
                             BottomTabButton(title: self.v1TabState.tabName, selected: self.bottomNavigationState.selected == .t1, iconName: "ic_map_bottom_navigation", action: {
                                 self.bottomNavigationState.selected = .t1
-                                
                             })
                             BottomTabButton(title: self.v2TabState.tabName, selected: self.bottomNavigationState.selected == .t2, iconName: "ic_sessions_bottom_navigation", action: {
                                 self.bottomNavigationState.selected = .t2
@@ -174,10 +171,8 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
                         
                         Color.white.frame(height: UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0)
                     }
-                    
                 }
                 .edgesIgnoringSafeArea(.all)
         }
-       // .edgesIgnoringSafeArea(.all)
     }
 }

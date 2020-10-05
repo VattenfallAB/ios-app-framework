@@ -9,7 +9,7 @@
 
 import UIKit
 import SwiftUI
-
+import Combine
 
 private let thereshold = CGFloat(30)
 private let closingSpeed = CGFloat(400)
@@ -50,16 +50,18 @@ public enum CardType {
 struct CardView<Content: View>: UIViewControllerRepresentable {
     
     @Binding var cardType: CardType
+    var cardHeight: PassthroughSubject<CGFloat, Never>
     
     var content: () -> Content
     
-    init(cardType: Binding<CardType>, @ViewBuilder content: @escaping () -> Content) {
+    init(cardType: Binding<CardType>, cardHeight: PassthroughSubject<CGFloat, Never>, @ViewBuilder content: @escaping () -> Content) {
         self._cardType = cardType
+        self.cardHeight = cardHeight
         self.content = content
     }
     
     func makeUIViewController(context: Context) -> CardHolderViewController<Content> {
-        let holerViewController = CardHolderViewController(cardType: $cardType,rootView: content())
+        let holerViewController = CardHolderViewController(cardType: $cardType, cardHeight: cardHeight, rootView: content())
         holerViewController.view.clipsToBounds = true
         return holerViewController
     }
@@ -78,8 +80,6 @@ struct CardView<Content: View>: UIViewControllerRepresentable {
             viewController.show(view:view ,full: false)
         case .none:
             break
-//        default:
-//            break
         }
     }
 }
@@ -140,14 +140,16 @@ public extension View {
 class CardHolderViewController<Content>: UIViewController where Content: View {
     
     @Binding var cardType: CardType
+    var cardHeight: PassthroughSubject<CGFloat, Never>
     
     private let hostingViewController: UIHostingController<Content>
     private var scrollView: CardScrollView?
-    init(cardType: Binding<CardType>, rootView: Content) {
+    init(cardType: Binding<CardType>, cardHeight: PassthroughSubject<CGFloat, Never>, rootView: Content) {
         hostingViewController = UIHostingController(rootView: rootView)
         scrollView = nil
         self.rootView = rootView
         self._cardType = cardType
+        self.cardHeight = cardHeight
         
         super.init(nibName: nil, bundle: nil)
         
@@ -169,10 +171,10 @@ class CardHolderViewController<Content>: UIViewController where Content: View {
     func show<V>(view: V, full: Bool, openedHeight: CGFloat = 100) where V: View {
         scrollView?.removeFromSuperview()
         if full {
-            scrollView = UIKitFullScreenCardView(cardType: $cardType, content: view, openedHeight: openedHeight)
+            scrollView = UIKitFullScreenCardView(cardType: $cardType, cardHeight: cardHeight, content: view, openedHeight: openedHeight)
             
         } else {
-            scrollView = UIKitCardView(cardType: $cardType, content: view)
+            scrollView = UIKitCardView(cardType: $cardType, cardHeight: cardHeight, content: view)
         }
         
         self.view.addSubview(scrollView!)
@@ -186,16 +188,6 @@ class CardHolderViewController<Content>: UIViewController where Content: View {
 
         
     }
-//
-//    var didAppear = false
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-//        if didAppear == false {
-//
-//            didAppear = true
-//        }
-       // print ("view did loaded")
-    }
 }
 
 protocol CardScrollView: UIScrollView {
@@ -207,13 +199,15 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
     func middleHeight() -> CGFloat { content.calculatedHeight() }
     
     @Binding var cardType: CardType
+    var cardHeight: PassthroughSubject<CGFloat, Never>
     
     let content: UIView
     
-    init(cardType: Binding<CardType>, content: Content) {
+    init(cardType: Binding<CardType>, cardHeight: PassthroughSubject<CGFloat, Never>, content: Content) {
         self.content = UIHostingController(rootView: content).view
         //self.dismissed = dismissed
         self._cardType = cardType
+        self.cardHeight = cardHeight
         
         super.init(frame: .zero)
         
@@ -370,7 +364,6 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
             speed = 0
         }
         
-        //print("Ended with speed: \(speed)")
         cardWillEndDragging(with: speed, targetContentOffset: targetContentOffset)
     }
     
@@ -385,7 +378,6 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
                     self.frame = f
                 }
             }, completion: { finished in
-                    //self.dismissed()
                 self.cardType = .none
                 self.removeFromSuperview()
             })
@@ -459,9 +451,9 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
         return viewState
     }
     
-    init(cardType: Binding<CardType>, content: Content, openedHeight: CGFloat) {
+    init(cardType: Binding<CardType>, cardHeight: PassthroughSubject<CGFloat, Never>, content: Content, openedHeight: CGFloat) {
         self.openedHeight = openedHeight
-        super.init(cardType: cardType, content: content)
+        super.init(cardType: cardType, cardHeight: cardHeight, content: content)
     }
     
     required init?(coder: NSCoder) {
@@ -526,7 +518,11 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
 
             contentOffset.y = 0
             
+            cardHeight.send(frame.origin.y)
+            print(frame.origin.y)
         }
+        
+        
         
         offsetReads.append((date: Date(), offset: frame.origin.y))
 
