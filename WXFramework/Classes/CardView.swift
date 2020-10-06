@@ -284,7 +284,7 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
         }
     }
     
-    private func moveToBottom() {
+    fileprivate func moveToBottom() {
         if let sView = superview {
             // First execution forces layout or something, without this line middleHeight returns worng height
             content.systemLayoutSizeFitting(CGSize(width: frame.size.width, height: 40)).height
@@ -541,8 +541,24 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
     override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         super.scrollViewWillBeginDragging(scrollView)
         self.showsVerticalScrollIndicator = false
-        var f = frame
-        f.size.height = 1000
-        frame = f
+//        var f = frame
+//        f.size.height = 1000
+//        frame = f
+    }
+    
+    // almost exact copy from parent class expept it has bigger content 
+    fileprivate override func moveToBottom() {
+        if let sView = superview {
+            // First execution forces layout or something, without this line middleHeight returns worng height
+            content.systemLayoutSizeFitting(CGSize(width: frame.size.width, height: 40)).height
+            let contentheight = middleHeight()
+            
+            var f = frame
+            f.size.height = contentheight + 1000
+            f.size.width = sView.frame.size.width
+            
+            f.origin.y = sView.frame.size.height - contentheight  - (self.superview?.superview?.safeAreaInsets.bottom ?? 0)
+            frame = f
+        }
     }
 }
