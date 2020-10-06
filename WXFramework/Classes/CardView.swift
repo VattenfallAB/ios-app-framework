@@ -454,6 +454,8 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
     init(cardType: Binding<CardType>, cardHeight: PassthroughSubject<CGFloat, Never>, content: Content, openedHeight: CGFloat) {
         self.openedHeight = openedHeight
         super.init(cardType: cardType, cardHeight: cardHeight, content: content)
+        clipsToBounds = true
+        alwaysBounceVertical = true
     }
     
     required init?(coder: NSCoder) {
@@ -520,6 +522,7 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
             
             cardHeight.send(frame.origin.y)
             print(frame.origin.y)
+            self.showsVerticalScrollIndicator = true
         }
         
         
@@ -532,6 +535,14 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
     }
     
     func topSpace() -> CGFloat {
-        return 50
+        return (self.superview?.superview?.superview?.safeAreaInsets.top ?? 0) +  65
+    }
+    
+    override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        super.scrollViewWillBeginDragging(scrollView)
+        self.showsVerticalScrollIndicator = false
+        var f = frame
+        f.size.height = 1000
+        frame = f
     }
 }
