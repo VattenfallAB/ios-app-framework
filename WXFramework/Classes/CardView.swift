@@ -520,8 +520,8 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
 
             contentOffset.y = 0
             
-            cardHeight.send(frame.origin.y)
-            print(frame.origin.y)
+            cardHeight.send(frame.origin.y - topSpace())
+            print(frame.origin.y - topSpace())
             self.showsVerticalScrollIndicator = true
         }
         
