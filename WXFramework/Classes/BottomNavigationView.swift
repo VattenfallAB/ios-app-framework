@@ -17,15 +17,20 @@ struct Style {
     static var vfGray = Color(red: 169.0 / 255.0, green: 169.0 / 255.0, blue: 169.0 / 255.0)
 }
 
+public class CardStatePassthroughSubject {
+    public var height = PassthroughSubject<CGFloat, Never>()
+    public var contentOffset = PassthroughSubject<CGFloat, Never>()
+}
+
 public class BottomNavigationState: ObservableObject {
     @Published public var cardType: CardType = .none
-    public var cardHeight = PassthroughSubject<CGFloat, Never>()
+    let cardState = CardStatePassthroughSubject()
     @Published public var selected: TabItem = .t1
 }
 
 public class TabState: ObservableObject {
     @Published public var cardType: CardType = .none
-    public var cardHeight = PassthroughSubject<CGFloat, Never>()
+    let cardState = CardStatePassthroughSubject()
     @Published public var isSelected = false
     @Published public var icon: Image?
     @Published public var tabName: String = ""
@@ -113,29 +118,29 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
     
     public var body: some View {
         
-        CardView(cardType: $bottomNavigationState.cardType, cardHeight: bottomNavigationState.cardHeight) {
+        CardView(cardType: $bottomNavigationState.cardType, cardState: bottomNavigationState.cardState) {
                 VStack {
                     ZStack {
                         Group {
                             
                             if self.bottomNavigationState.selected == .t1 {
-                                CardView(cardType: self.$v1TabState.cardType, cardHeight: self.v1TabState.cardHeight) {
+                                CardView(cardType: self.$v1TabState.cardType, cardState: self.v1TabState.cardState) {
                                     self.v1.environment(\.tabState, self.v1TabState)
                                 }
                             } else if self.bottomNavigationState.selected == .t2 {
-                                CardView(cardType: self.$v2TabState.cardType, cardHeight: self.v2TabState.cardHeight) {
+                                CardView(cardType: self.$v2TabState.cardType, cardState: self.v2TabState.cardState) {
                                     self.v2.environment(\.tabState, self.v2TabState)
                                 }
                             } else if self.bottomNavigationState.selected == .t3 {
-                                CardView(cardType: self.$v3TabState.cardType, cardHeight: self.v3TabState.cardHeight) {
+                                CardView(cardType: self.$v3TabState.cardType, cardState: self.v3TabState.cardState) {
                                     self.v3.environment(\.tabState, self.v3TabState)
                                 }
                             } else if self.bottomNavigationState.selected == .t4 {
-                                CardView(cardType: self.$v4TabState.cardType, cardHeight: self.v4TabState.cardHeight) {
+                                CardView(cardType: self.$v4TabState.cardType, cardState: self.v4TabState.cardState) {
                                     self.v4.environment(\.tabState, self.v4TabState)
                                 }
                             } else if self.bottomNavigationState.selected == .t5 {
-                                CardView(cardType: self.$v5TabState.cardType, cardHeight: self.v5TabState.cardHeight) {
+                                CardView(cardType: self.$v5TabState.cardType, cardState: self.v5TabState.cardState) {
                                     self.v5.environment(\.tabState, self.v5TabState)
                                 }
                             }
