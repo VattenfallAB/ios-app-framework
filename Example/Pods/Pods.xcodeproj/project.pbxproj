@@ -17,9 +17,7 @@
 		802F9AC75EE1B3631870EF9561C604FF /* Pods-WXFramework_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = A54A5D3C9005FB5B7302B4FB1418971A /* Pods-WXFramework_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8424A0917228F61204AE697A367BD83F /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F22E1DE7DCB4485E11917024CB8980 /* CardView.swift */; };
 		9129CEE0C25AB09BC2709FCCB1A51F7E /* Pods-WXFramework_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = C1B7DC925D2491060747C59A0AC48A4D /* Pods-WXFramework_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		94AEC509D708E22D527C9B978843ABD1 /* ReplaceMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38A09C82FEABCD1658D383CB53B16DE /* ReplaceMe.swift */; };
 		95075C25F406034FE9221874741FF117 /* Pods-WXFramework_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BCD89CFB999403455C11B6E5B00F3FB /* Pods-WXFramework_Tests-dummy.m */; };
-		B16F2923D2478EA6B392FEE6E2E38EA5 /* BlockingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D611156725D12ED91CA6ACA92CE735A /* BlockingCardView.swift */; };
 		B5D3C582856FA542D01E158199900C03 /* WXFramework-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D0E8E256E8ABF53A8E2B661C436F6B2 /* WXFramework-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
@@ -60,7 +58,6 @@
 		7FD365EDBF3E3A7DDA3E038EE14DF2F3 /* Pods-WXFramework_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-WXFramework_Tests.modulemap"; sourceTree = "<group>"; };
 		8961AD8AD81608A5897B5CFD85EE828E /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8CA2EC617D4695549096D8C6FBB9D80B /* Pods_WXFramework_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WXFramework_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8D611156725D12ED91CA6ACA92CE735A /* BlockingCardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BlockingCardView.swift; path = WXFramework/Classes/BlockingCardView.swift; sourceTree = "<group>"; };
 		9142B42B2F8BFC91ED6C0A73F4CD8522 /* BottomNavigationView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BottomNavigationView.swift; path = WXFramework/Classes/BottomNavigationView.swift; sourceTree = "<group>"; };
 		954FFD353525DB1F8F565FCE1A7EB463 /* Pods-WXFramework_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-WXFramework_Example-dummy.m"; sourceTree = "<group>"; };
 		977F77B2A0D3ABB6D235047A9955924E /* Pods-WXFramework_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-WXFramework_Example-frameworks.sh"; sourceTree = "<group>"; };
@@ -77,7 +74,6 @@
 		D7954DCCB827D04FCAC5DEFE825DEE50 /* Pods-WXFramework_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-WXFramework_Example.release.xcconfig"; sourceTree = "<group>"; };
 		DA9AE51BBA6D50B856D1B3C81F4DE843 /* WXFramework-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "WXFramework-dummy.m"; sourceTree = "<group>"; };
 		E4CD47B71A6F609E6C67048B80A30EAF /* Pods_WXFramework_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WXFramework_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F38A09C82FEABCD1658D383CB53B16DE /* ReplaceMe.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReplaceMe.swift; path = WXFramework/Classes/ReplaceMe.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,11 +142,9 @@
 		A964D83269C8DE9719ADA57C1EAD871D /* WXFramework */ = {
 			isa = PBXGroup;
 			children = (
-				8D611156725D12ED91CA6ACA92CE735A /* BlockingCardView.swift */,
 				9142B42B2F8BFC91ED6C0A73F4CD8522 /* BottomNavigationView.swift */,
 				108A036323857A18F4C8952B60C44972 /* BottomTabButton.swift */,
 				35F22E1DE7DCB4485E11917024CB8980 /* CardView.swift */,
-				F38A09C82FEABCD1658D383CB53B16DE /* ReplaceMe.swift */,
 				22B439586D1C4F04FC80CF431EF16791 /* Pod */,
 				A8487DF2DBCEB77F54C24C254622A483 /* Support Files */,
 			);
@@ -379,11 +373,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B16F2923D2478EA6B392FEE6E2E38EA5 /* BlockingCardView.swift in Sources */,
 				4965A419128D6B51BA9544D082F799E3 /* BottomNavigationView.swift in Sources */,
 				7DE8AF8B64EF1C18A1A8FD8A1E25646B /* BottomTabButton.swift in Sources */,
 				8424A0917228F61204AE697A367BD83F /* CardView.swift in Sources */,
-				94AEC509D708E22D527C9B978843ABD1 /* ReplaceMe.swift in Sources */,
 				213ADBE0F32019036119DC4DD69A27B0 /* WXFramework-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
