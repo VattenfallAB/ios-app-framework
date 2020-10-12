@@ -79,7 +79,7 @@ struct CardView<Content: View>: UIViewControllerRepresentable {
         case .blocking(let view):
             viewController.show(view:view ,full: false)
         case .none:
-            break
+            viewController.close()
         }
     }
 }
@@ -185,13 +185,16 @@ class CardHolderViewController<Content>: UIViewController where Content: View {
         self.view.layoutIfNeeded()
         
         self.scrollView?.open()
-
-        
+    }
+    
+    func close() {
+        self.scrollView?.close(completion: nil)
     }
 }
 
 protocol CardScrollView: UIScrollView {
     func open()
+    func close(completion:(()-> Void)?)
 }
 
 class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate where Content : View {
@@ -258,8 +261,8 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
        // print("opened")
         moveToClosed()
         
-//        setNeedsLayout()
-//        layoutIfNeeded()
+        setNeedsLayout()
+        layoutIfNeeded()
         
         
 //
@@ -369,25 +372,31 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
     
     func cardWillEndDragging(with speed: CGFloat, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if outOfOffset() || abs(speed) > closingSpeed {
-            UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
-                let contentheight = self.middleHeight()
-                if let sView = self.superview {
-                    var f = self.frame
-                    f.size.height = contentheight
-                    f.origin.y = sView.frame.size.height + (self.superview?.superview?.safeAreaInsets.bottom ?? 0)
-                    self.frame = f
-                }
-            }, completion: { finished in
+            close() {
                 self.cardType = .none
-                self.removeFromSuperview()
-            })
-            
+            }
         } else {
             UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
                 self.moveToBottom()
             })
         }
     
+    }
+    
+    func close(completion:(()-> Void)? = nil) {
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
+            let contentheight = self.middleHeight()
+            if let sView = self.superview {
+                var f = self.frame
+                f.size.height = contentheight
+                f.origin.y = sView.frame.size.height + (self.superview?.superview?.safeAreaInsets.bottom ?? 0)
+                self.frame = f
+            }
+        }, completion: { finished in
+            
+            completion?()
+            self.removeFromSuperview()
+        })
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -521,6 +530,11 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
         if (contentOffset.y < 0  || frame.origin.y > topSpace()) {
             var f = frame
             f.origin.y -= contentOffset.y
+            
+            if f.origin.y < topSpace() {
+                f.origin.y = topSpace()
+            }
+            
             frame = f
 
             contentOffset.y = 0
