@@ -24,13 +24,13 @@ public class CardStatePassthroughSubject {
 
 public class BottomNavigationState: ObservableObject {
     @Published public var cardType: CardType = .none
-    let cardState = CardStatePassthroughSubject()
+    public let cardState = CardStatePassthroughSubject()
     @Published public var selected: TabItem = .t1
 }
 
 public class TabState: ObservableObject {
     @Published public var cardType: CardType = .none
-    let cardState = CardStatePassthroughSubject()
+    public let cardState = CardStatePassthroughSubject()
     @Published public var isSelected = false
     @Published public var icon: Image?
     @Published public var tabName: String = ""
