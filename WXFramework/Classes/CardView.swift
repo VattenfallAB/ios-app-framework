@@ -182,7 +182,7 @@ class CardHolderViewController<Content>: UIViewController where Content: View {
         scrollView?.contentSize = CGSize(width: 1000, height: 1000)
         
         self.view.setNeedsLayout()
-        self.view.layoutIfNeeded()
+        //self.view.layoutIfNeeded()
         
         self.scrollView?.open()
     }
@@ -555,7 +555,7 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
     }
     
     func topSpace() -> CGFloat {
-        return (self.superview?.superview?.superview?.safeAreaInsets.top ?? 0) +  65
+        return (self.superview?.superview?.superview?.safeAreaInsets.top ?? 0) +  65 - 21
     }
     
     override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
