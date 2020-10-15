@@ -512,9 +512,12 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
         }
         
         
+        
         if viewState != .fullScreen {
             targetContentOffset.pointee = CGPoint(x: 0, y: 0)
         }
+        
+        print ("finifhed with offset \(contentOffset)")
         
         viewState = nextViewState
         
@@ -523,6 +526,11 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
         } else {
             showsVerticalScrollIndicator = true
         }
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        super.scrollViewDidScroll(scrollView)
+        cardState.contentOffset.send(contentOffset.y)
     }
     
     override func cardDidScroll() {
@@ -543,9 +551,6 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
             //print(frame.origin.y - topSpace())
             self.showsVerticalScrollIndicator = true
         }
-        
-        cardState.contentOffset.send(contentOffset.y)
-        
         
         offsetReads.append((date: Date(), offset: frame.origin.y))
 
