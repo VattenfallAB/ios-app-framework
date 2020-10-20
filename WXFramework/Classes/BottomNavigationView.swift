@@ -17,20 +17,43 @@ struct Style {
     static var vfGray = Color(red: 169.0 / 255.0, green: 169.0 / 255.0, blue: 169.0 / 255.0)
 }
 
-public class CardStatePassthroughSubject {
-    public var height = PassthroughSubject<CGFloat, Never>()
-    public var contentOffset = PassthroughSubject<CGFloat, Never>()
+public class CardEvents {
+    public let topSpace = PassthroughSubject<CGFloat, Never>()
+    public let contentOffset = PassthroughSubject<CGFloat, Never>()
+    public let cardDidClosed = PassthroughSubject<Void, Never>()
+    
+    // INTERNAL:
+    var showCardViewAction = PassthroughSubject<(view: AnyView, isBlocking: Bool, isFullScreen: Bool, openingHeight: CGFloat), Never>()
+    var closeCardAction = PassthroughSubject<Void, Never>()
 }
 
 public class BottomNavigationState: ObservableObject {
-    @Published public var cardType: CardType = .none
-    public let cardState = CardStatePassthroughSubject()
+    public let cards = Cards()
+    
     @Published public var selected: TabItem = .t1
 }
 
+public class Card {
+    @Published var cardView: AnyView?
+    public let events = CardEvents()
+    public func show<Content: View>(isBlocking: Bool = false, isFullScreen: Bool = false, openingHeight: CGFloat = 100, @ViewBuilder content: @escaping () -> Content)  {
+        events.showCardViewAction.send((view: AnyView(content()), isBlocking: isBlocking, isFullScreen: isFullScreen, openingHeight: openingHeight))
+    }
+    
+    public func close() {
+        events.closeCardAction.send()
+    }
+}
+
+public class Cards {
+    public var blockingCard = Card()
+    public var notClosableCard = Card()
+    public var normalCard = Card()
+}
+
 public class TabState: ObservableObject {
-    @Published public var cardType: CardType = .none
-    public let cardState = CardStatePassthroughSubject()
+    public let cards = Cards()
+    
     @Published public var isSelected = false
     @Published public var icon: Image?
     @Published public var tabName: String = ""
@@ -116,35 +139,34 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
     @ObservedObject var v4TabState: TabState
     @ObservedObject var v5TabState: TabState
     
+    
     public var body: some View {
         
-        CardView(cardType: $bottomNavigationState.cardType, cardState: bottomNavigationState.cardState) {
+        CardView(cards: bottomNavigationState.cards) {
                 VStack {
                     ZStack {
-                        Group {
+                        //Group {
                             
-                            if self.bottomNavigationState.selected == .t1 {
-                                CardView(cardType: self.$v1TabState.cardType, cardState: self.v1TabState.cardState) {
-                                    self.v1.environment(\.tabState, self.v1TabState)
-                                }
-                            } else if self.bottomNavigationState.selected == .t2 {
-                                CardView(cardType: self.$v2TabState.cardType, cardState: self.v2TabState.cardState) {
-                                    self.v2.environment(\.tabState, self.v2TabState)
-                                }
-                            } else if self.bottomNavigationState.selected == .t3 {
-                                CardView(cardType: self.$v3TabState.cardType, cardState: self.v3TabState.cardState) {
-                                    self.v3.environment(\.tabState, self.v3TabState)
-                                }
-                            } else if self.bottomNavigationState.selected == .t4 {
-                                CardView(cardType: self.$v4TabState.cardType, cardState: self.v4TabState.cardState) {
-                                    self.v4.environment(\.tabState, self.v4TabState)
-                                }
-                            } else if self.bottomNavigationState.selected == .t5 {
-                                CardView(cardType: self.$v5TabState.cardType, cardState: self.v5TabState.cardState) {
-                                    self.v5.environment(\.tabState, self.v5TabState)
-                                }
-                            }
-                        }
+                            CardView(cards: self.v1TabState.cards) {
+                                self.v1.environment(\.tabState, self.v1TabState)
+                            }.zIndex(self.bottomNavigationState.selected == .t1 ? 1 : 0.5)
+                            
+                            CardView(cards: self.v2TabState.cards) {
+                                self.v2.environment(\.tabState, self.v2TabState)
+                            }.zIndex(self.bottomNavigationState.selected == .t2 ? 1 : 0.5)
+                        
+                            CardView(cards: self.v3TabState.cards) {
+                                self.v3.environment(\.tabState, self.v3TabState)
+                            }.zIndex(self.bottomNavigationState.selected == .t3 ? 1 : 0.5)
+                        
+                            CardView(cards: self.v4TabState.cards) {
+                                self.v4.environment(\.tabState, self.v4TabState)
+                            }.zIndex(self.bottomNavigationState.selected == .t4 ? 1 : 0.5)
+                        
+                            CardView(cards: self.v5TabState.cards) {
+                                self.v5.environment(\.tabState, self.v5TabState)
+                            }.zIndex(self.bottomNavigationState.selected == .t5 ? 1 : 0.5)
+                        //}
                     }
                     .environment(\.bottomNavigationState, self.bottomNavigationState)
 

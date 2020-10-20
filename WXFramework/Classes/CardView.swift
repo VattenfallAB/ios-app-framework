@@ -14,72 +14,67 @@ import Combine
 private let thereshold = CGFloat(30)
 private let closingSpeed = CGFloat(400)
 
-extension CardView {
-    func errorView(title:String) -> some View {
-        VStack {
-            Text("Title : \(title)").font(.headline).padding(EdgeInsets(top: 32, leading: 0, bottom: 32, trailing: 0))
-            Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
-            Text("Your content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\nYour content herasd vasiv aoif vhaoi fvha fvh aifpv haioud vfahdfadhfadf adf asdfe\n")
-        }
-    }
-    
-    func list() -> some View {
-        //List {
-          //  ForEach(1..<100) {_ in
-        ScrollView {
-         VStack {
-            ForEach(1..<100) {_ in
-                    Text("Example very long list")
-            }
-        }
-        }.edgesIgnoringSafeArea(.leading)
-            //}
-        //}.frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-}
-
-
 public enum CardType {
     case error(title: String)
     case list
     case any(view: AnyView?, openedHeight: CGFloat)
     case blocking(view: AnyView?)
     case none
+    case unknown
 }
 
 struct CardView<Content: View>: UIViewControllerRepresentable {
     
-    @Binding var cardType: CardType
-    var cardState: CardStatePassthroughSubject
+//    @Binding var cardType: CardType
+//    var cardState: CardStatePassthroughSubject
     
     var content: () -> Content
+    let cards: Cards
     
-    init(cardType: Binding<CardType>, cardState: CardStatePassthroughSubject, @ViewBuilder content: @escaping () -> Content) {
-        self._cardType = cardType
-        self.cardState = cardState
+    init(cards: Cards, @ViewBuilder content: @escaping () -> Content) {
+//        self._cardType = cardType
+//        self.cardState = cardState
         self.content = content
+        self.cards = cards
     }
     
     func makeUIViewController(context: Context) -> CardHolderViewController<Content> {
-        let holerViewController = CardHolderViewController(cardType: $cardType, cardState: cardState, rootView: content())
+        let holerViewController = CardHolderViewController(cards: cards, rootView: content())
         holerViewController.view.clipsToBounds = true
         return holerViewController
     }
     
+    var lastState = CardType.none
+    
     func updateUIViewController(_ viewController: CardHolderViewController<Content>, context: Context) {
         viewController.rootView = self.content()
         
-        switch cardType {
-        case .error(let title):
-            viewController.show(view: errorView(title: title), full: false)
-        case .list:
-            viewController.show(view:list() ,full: true)
-        case .any(let view, let openedHeight):
-            viewController.show(view:view ,full: true, openedHeight: openedHeight)
-        case .blocking(let view):
-            viewController.show(view:view ,full: false)
-        case .none:
-            viewController.close()
+//        switch cardType {
+//        case .error(let title):
+//            viewController.show(view: errorView(title: title), full: false)
+//        case .list:
+//            viewController.show(view:list() ,full: true)
+//        case .any(let view, let openedHeight):
+//            viewController.show(view:view ,full: true, openedHeight: openedHeight)
+//        case .blocking(let view):
+//            viewController.show(view:view ,full: false)
+//        case .none:
+//            viewController.close()
+//        case .unknown:
+//            break
+//        }
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        return Coordinator(self)
+    }
+    
+    class Coordinator: NSObject {
+        let parent: CardView
+        
+        init(_ parent: CardView) {
+            self.parent = parent
+            super.init()
         }
     }
 }
@@ -127,35 +122,83 @@ extension UIView {
 }
 
 
-public extension View {
-    func cardType(isFixedHeight: Bool = true, isBlocking: Bool = false, isFullScreen: Bool = false, openedHeight: CGFloat = 100) -> CardType {
-        if isFullScreen {
-            return .any(view: AnyView(self), openedHeight: openedHeight)
-        }
-        return .blocking(view: AnyView(self))
-    }
-}
+//public extension View {
+//    func cardType(isFixedHeight: Bool = true, isBlocking: Bool = false, isFullScreen: Bool = false, openingHeight: CGFloat = 100) -> CardType {
+//        if isFullScreen {
+//            return .any(view: AnyView(self), openedHeight: openedHeight)
+//        }
+//        return .blocking(view: AnyView(self))
+//    }
+//}
+
+
 
 
 class CardHolderViewController<Content>: UIViewController where Content: View {
     
-    @Binding var cardType: CardType
-    var cardState: CardStatePassthroughSubject
+//    @Binding var cardType: CardType
+//    var cardState: CardStatePassthroughSubject
     
     private let hostingViewController: UIHostingController<Content>
-    private var scrollView: CardScrollView?
-    init(cardType: Binding<CardType>, cardState: CardStatePassthroughSubject, rootView: Content) {
+    
+    private var blockingCardScrollView: CardScrollView?
+    private var normalCardScrollView: CardScrollView?
+    private var notClosableCardScrollView: CardScrollView?
+    
+    
+    var bag = Set<AnyCancellable>()
+    let cards: Cards
+    
+    init(cards: Cards, rootView: Content) {
+        
         hostingViewController = UIHostingController(rootView: rootView)
-        scrollView = nil
+//        scrollView = nil
         self.rootView = rootView
-        self._cardType = cardType
-        self.cardState = cardState
+//        self._cardType = cardType
+//        self.cardState = cardState
+        
+        self.cards = cards
         
         super.init(nibName: nil, bundle: nil)
         
         addChild(hostingViewController)
         view.addView(view: hostingViewController.view)
         hostingViewController.didMove(toParent: self)
+        
+        
+        cards.blockingCard.events.showCardViewAction.sink(receiveValue: openBlockingCard).store(in: &bag)
+        cards.normalCard.events.showCardViewAction.sink(receiveValue: normalCard).store(in: &bag)
+        cards.notClosableCard.events.showCardViewAction.sink(receiveValue: notClosableCard).store(in: &bag)
+        
+        cards.blockingCard.events.closeCardAction.sink(receiveValue: blockingCardDidClosed).store(in: &bag)
+        cards.normalCard.events.closeCardAction.sink(receiveValue: normalCarddDidClosed).store(in: &bag)
+        cards.notClosableCard.events.closeCardAction.sink(receiveValue: notClosableCardDidClosed).store(in: &bag)
+    }
+    
+    func blockingCardDidClosed() {
+        cards.blockingCard.events.cardDidClosed.send()
+        blockingView?.removeFromSuperview()
+        blockingView = nil
+    }
+    
+    func normalCarddDidClosed() {
+        cards.normalCard.events.cardDidClosed.send()
+    }
+    
+    func notClosableCardDidClosed() {
+        cards.notClosableCard.events.cardDidClosed.send()
+    }
+    
+    func openBlockingCard(view: AnyView, isBlocking: Bool, isFullScreen: Bool, openingHeigh: CGFloat) {
+        show(scrollView: &blockingCardScrollView, card: cards.blockingCard, view: view, isBlocking: isBlocking, full: isFullScreen, openedHeight: openingHeigh)
+    }
+    
+    func normalCard(view: AnyView, isBlocking: Bool, isFullScreen: Bool, openingHeigh: CGFloat) {
+        show(scrollView: &normalCardScrollView, card: cards.normalCard, view: view, full: isFullScreen, openedHeight: openingHeigh)
+    }
+    
+    func notClosableCard(view: AnyView, isBlocking: Bool, isFullScreen: Bool, openingHeigh: CGFloat) {
+        show(scrollView: &notClosableCardScrollView, card: cards.notClosableCard, view: view, full: isFullScreen, openedHeight: openingHeigh)
     }
     
     required init?(coder: NSCoder) {
@@ -168,13 +211,26 @@ class CardHolderViewController<Content>: UIViewController where Content: View {
         }
     }
     
-    func show<V>(view: V, full: Bool, openedHeight: CGFloat = 100) where V: View {
+    var blockingView: UIView?
+    
+    func show<V>(scrollView: inout CardScrollView?, card: Card, view: V, isBlocking: Bool = false, full: Bool, openedHeight: CGFloat = 100) where V: View {
         scrollView?.removeFromSuperview()
+        blockingView?.removeFromSuperview()
+        blockingView = nil
+        
+        if isBlocking {
+            let blockingView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height))
+            self.view.addSubview(blockingView)
+            
+            blockingView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
+            self.blockingView = blockingView
+        }
+        
         if full {
-            scrollView = UIKitFullScreenCardView(cardType: $cardType, cardState: cardState, content: view, openedHeight: openedHeight)
+            scrollView = UIKitFullScreenCardView(card: card, content: view, openedHeight: openedHeight)
             
         } else {
-            scrollView = UIKitCardView(cardType: $cardType, cardState: cardState, content: view)
+            scrollView = UIKitCardView(card: card, content: view)
         }
         
         self.view.addSubview(scrollView!)
@@ -184,11 +240,11 @@ class CardHolderViewController<Content>: UIViewController where Content: View {
         self.view.setNeedsLayout()
         //self.view.layoutIfNeeded()
         
-        self.scrollView?.open()
+        scrollView?.open()
     }
     
     func close() {
-        self.scrollView?.close(completion: nil)
+        //self.scrollView?.close(completion: nil)
     }
 }
 
@@ -201,16 +257,19 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
     //var dismissed: ()->Void
     func middleHeight() -> CGFloat { content.calculatedHeight() }
     
-    @Binding var cardType: CardType
-    var cardState: CardStatePassthroughSubject
+//    @Binding var cardType: CardType
+//    var cardState: CardStatePassthroughSubject
     
     let content: UIView
     
-    init(cardType: Binding<CardType>, cardState: CardStatePassthroughSubject, content: Content) {
+    let card: Card
+    
+    init(card: Card, content: Content) {
         self.content = UIHostingController(rootView: content).view
         //self.dismissed = dismissed
-        self._cardType = cardType
-        self.cardState = cardState
+//        self._cardType = cardType
+//        self.cardState = cardState
+        self.card = card
         
         super.init(frame: .zero)
         
@@ -373,7 +432,7 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
     func cardWillEndDragging(with speed: CGFloat, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if outOfOffset() || abs(speed) > closingSpeed {
             close() {
-                self.cardType = .none
+                self.card.events.closeCardAction.send()
             }
         } else {
             UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
@@ -391,6 +450,8 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
                 f.size.height = contentheight
                 f.origin.y = sView.frame.size.height + (self.superview?.superview?.safeAreaInsets.bottom ?? 0)
                 self.frame = f
+                
+                self.card.events.closeCardAction.send()
             }
         }, completion: { finished in
             
@@ -460,9 +521,9 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
         return viewState
     }
     
-    init(cardType: Binding<CardType>, cardState: CardStatePassthroughSubject, content: Content, openedHeight: CGFloat) {
+    init(card: Card, content: Content, openedHeight: CGFloat) {
         self.openedHeight = openedHeight
-        super.init(cardType: cardType, cardState: cardState, content: content)
+        super.init(card: card, content: content)
         clipsToBounds = true
         alwaysBounceVertical = true
     }
@@ -483,7 +544,7 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
                     f.origin.y = self.topSpace()
                     self.frame = f
                     
-                    self.cardState.height.send(self.frame.origin.y - self.topSpace())
+                    self.card.events.topSpace.send(self.frame.origin.y - self.topSpace())
                 }
             })
         } else if nextViewState == .willClose || ((viewState == .middle) && (speed > closingSpeed)) {
@@ -492,10 +553,10 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
                     var f = self.frame
                     f.origin.y = sView.frame.size.height + (self.superview?.superview?.safeAreaInsets.bottom ?? 0)
                     self.frame = f
-                    self.cardState.height.send(self.frame.origin.y - self.topSpace())
+                    self.card.events.topSpace.send(self.frame.origin.y - self.topSpace())
                 }
             }, completion: { finished in
-                self.cardType = .none
+                self.card.events.cardDidClosed.send()
                 self.removeFromSuperview()
             })
         } else if nextViewState == .middle || ((viewState == .fullScreen) && speed > closingSpeed) {
@@ -506,7 +567,7 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
                     f.size.height = sView.frame.size.height
                     self.frame = f
                     
-                    self.cardState.height.send(self.frame.origin.y - self.topSpace())
+                    self.card.events.topSpace.send(self.frame.origin.y - self.topSpace())
                 }
             })
         }
@@ -530,7 +591,7 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         super.scrollViewDidScroll(scrollView)
-        cardState.contentOffset.send(contentOffset.y)
+        card.events.contentOffset.send(contentOffset.y)
     }
     
     override func cardDidScroll() {
@@ -547,7 +608,7 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
 
             contentOffset.y = 0
             
-            cardState.height.send(frame.origin.y - topSpace())
+            self.card.events.topSpace.send(frame.origin.y - topSpace())
             //print(frame.origin.y - topSpace())
             self.showsVerticalScrollIndicator = true
         }
