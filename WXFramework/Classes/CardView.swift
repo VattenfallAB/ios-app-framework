@@ -176,17 +176,27 @@ class CardHolderViewController<Content>: UIViewController where Content: View {
     }
     
     func blockingCardDidClosed() {
-        cards.blockingCard.events.cardDidClosed.send()
         blockingView?.removeFromSuperview()
         blockingView = nil
+        blockingCardScrollView?.close {
+            self.cards.blockingCard.events.cardDidClosed.send()
+        }
+        blockingCardScrollView = nil
     }
     
     func normalCarddDidClosed() {
-        cards.normalCard.events.cardDidClosed.send()
+        normalCardScrollView?.close {
+            self.cards.normalCard.events.cardDidClosed.send()
+        }
+        
+        normalCardScrollView = nil
     }
     
     func notClosableCardDidClosed() {
-        cards.notClosableCard.events.cardDidClosed.send()
+        notClosableCardScrollView?.close {
+            self.cards.notClosableCard.events.cardDidClosed.send()
+        }
+        notClosableCardScrollView = nil
     }
     
     func openBlockingCard(view: AnyView, isBlocking: Bool, isFullScreen: Bool, openingHeigh: CGFloat) {
@@ -451,7 +461,7 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
                 f.origin.y = sView.frame.size.height + (self.superview?.superview?.safeAreaInsets.bottom ?? 0)
                 self.frame = f
                 
-                self.card.events.closeCardAction.send()
+                //self.card.events.closeCardAction.send()
             }
         }, completion: { finished in
             
