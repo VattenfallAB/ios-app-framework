@@ -175,24 +175,24 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
                         Style.vfGray.frame(minHeight: 0.5, idealHeight: 0.5, maxHeight: 0.5)
                         
                         HStack {
-                            BottomTabButton(title: self.v1TabState.tabName, selected: self.bottomNavigationState.selected == .t1, iconName: “ic_map_bottom_navigation”, action: {
+                            BottomTabButton(title: self.v1TabState.tabName, selected: self.bottomNavigationState.selected == .t1, iconName: "ic_map_bottom_navigation", action: {
                                 self.bottomNavigationState.selected = .t1
-                            }).accessibility(identifier: “layoutItemMap”)
-                            BottomTabButton(title: self.v2TabState.tabName, selected: self.bottomNavigationState.selected == .t2, iconName: “ic_sessions_bottom_navigation”, action: {
+                            }).accessibility(identifier: "layoutItemMap")
+                            BottomTabButton(title: self.v2TabState.tabName, selected: self.bottomNavigationState.selected == .t2, iconName: "ic_sessions_bottom_navigation", action: {
                                 self.bottomNavigationState.selected = .t2
-                            }).accessibility(identifier: “layoutItemSessions”)
+                            }).accessibility(identifier: "layoutItemSessions")
                             ZStack {
-                                Image(“ic_circle_bottom_navigation”).offset(x: 0, y: -7)
-                                BottomTabButton(title: self.v3TabState.tabName, selected: self.bottomNavigationState.selected == .t3, iconName: “ic_charging_slow”, action: {
+                                Image("ic_circle_bottom_navigation").offset(x: 0, y: -7)
+                                BottomTabButton(title: self.v3TabState.tabName, selected: self.bottomNavigationState.selected == .t3, iconName: "ic_charging_slow", action: {
                                     self.bottomNavigationState.selected = .t3
                                 })
                             }
-                            BottomTabButton(title: self.v4TabState.tabName, selected: self.bottomNavigationState.selected == .t4, iconName: “ic_star”, action: {
+                            BottomTabButton(title: self.v4TabState.tabName, selected: self.bottomNavigationState.selected == .t4, iconName: "ic_star", action: {
                                 self.bottomNavigationState.selected = .t4
-                            }).accessibility(identifier: “layoutItemFavorite”)
-                            BottomTabButton(title: self.v5TabState.tabName, selected: self.bottomNavigationState.selected == .t5, iconName: “ic_more_bottom_navigation”, action: {
+                            }).accessibility(identifier: "layoutItemFavorite")
+                            BottomTabButton(title: self.v5TabState.tabName, selected: self.bottomNavigationState.selected == .t5, iconName: "ic_more_bottom_navigation", action: {
                                 self.bottomNavigationState.selected = .t5
-                            }).accessibility(identifier: “layoutItemMore”)
+                            }).accessibility(identifier: "layoutItemMore")
                         }
                         
                         Color.white.frame(height: UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0)
