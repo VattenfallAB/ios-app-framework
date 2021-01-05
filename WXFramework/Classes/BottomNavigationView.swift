@@ -13,7 +13,6 @@ public enum TabItem { case t1, t2, t3, t4, t5}
 
 struct Style {
     static var vfBlack = Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 34.0 / 255.0)
-    static var vfBlue = Color(red: 32.0 / 255.0, green: 113.0 / 255.0, blue: 181.0 / 255.0)
     static var vfGray = Color(red: 169.0 / 255.0, green: 169.0 / 255.0, blue: 169.0 / 255.0)
 }
 
@@ -97,13 +96,15 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
     let v3: T3
     let v4: T4
     let v5: T5
+    let accentColor: Color
     
     public init(
         @ViewBuilder v1: (TabBarItem) -> T1,
         @ViewBuilder v2: (TabBarItem) -> T2,
         @ViewBuilder v3: (TabBarItem) -> T3,
         @ViewBuilder v4: (TabBarItem) -> T4,
-        @ViewBuilder v5: (TabBarItem) -> T5) {
+        @ViewBuilder v5: (TabBarItem) -> T5,
+        accentColor: Color) {
         
         
         let v1TabState = TabState()
@@ -177,22 +178,22 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
                         HStack {
                             BottomTabButton(title: self.v1TabState.tabName, selected: self.bottomNavigationState.selected == .t1, iconName: "ic_map_bottom_navigation", action: {
                                 self.bottomNavigationState.selected = .t1
-                            }).accessibility(identifier: "layoutItemMap")
+                            }, accentColor: accentColor).accessibility(identifier: "layoutItemMap")
                             BottomTabButton(title: self.v2TabState.tabName, selected: self.bottomNavigationState.selected == .t2, iconName: "ic_sessions_bottom_navigation", action: {
                                 self.bottomNavigationState.selected = .t2
-                            }).accessibility(identifier: "layoutItemSessions")
+                            }, accentColor: accentColor).accessibility(identifier: "layoutItemSessions")
                             ZStack {
                                 Image("ic_circle_bottom_navigation").offset(x: 0, y: -7)
                                 BottomTabButton(title: self.v3TabState.tabName, selected: self.bottomNavigationState.selected == .t3, iconName: "ic_charging_slow", action: {
                                     self.bottomNavigationState.selected = .t3
-                                })
+                                }, accentColor: accentColor)
                             }
                             BottomTabButton(title: self.v4TabState.tabName, selected: self.bottomNavigationState.selected == .t4, iconName: "ic_star", action: {
                                 self.bottomNavigationState.selected = .t4
-                            }).accessibility(identifier: "layoutItemFavorite")
+                            }, accentColor: accentColor).accessibility(identifier: "layoutItemFavorite")
                             BottomTabButton(title: self.v5TabState.tabName, selected: self.bottomNavigationState.selected == .t5, iconName: "ic_more_bottom_navigation", action: {
                                 self.bottomNavigationState.selected = .t5
-                            }).accessibility(identifier: "layoutItemMore")
+                            }, accentColor: accentColor).accessibility(identifier: "layoutItemMore")
                         }
                         
                         Color.white.frame(height: UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0)

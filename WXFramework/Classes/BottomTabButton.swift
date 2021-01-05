@@ -13,6 +13,7 @@ struct BottomTabButton: View {
     var selected: Bool
     let iconName: String
     let action: ()->Void
+    let accentColor: Color
     
     var body: some View {
         Button(action: action) {
@@ -21,7 +22,7 @@ struct BottomTabButton: View {
                 Text(title)
             }
         }
-        .accentColor(selected ? Style.vfBlue : Style.vfBlack)
+        .accentColor(selected ? accentColor : Style.vfBlack)
         .font(Font.system(size: 12, weight: .medium))
         .frame(minWidth: 0,maxWidth: .infinity, minHeight: 55,maxHeight: 55)
     }
