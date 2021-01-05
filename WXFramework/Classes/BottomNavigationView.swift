@@ -128,7 +128,7 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
         self.v3 = v3(TabBarItem(bottomNavigationState: bottomNavigationState, tabState: v3TabState))
         self.v4 = v4(TabBarItem(bottomNavigationState: bottomNavigationState, tabState: v4TabState))
         self.v5 = v5(TabBarItem(bottomNavigationState: bottomNavigationState, tabState: v5TabState))
-        
+        self.accentColor = accentColor
 
     }
     
