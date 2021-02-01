@@ -16,14 +16,19 @@ struct Style {
     static var vfGray = Color(red: 169.0 / 255.0, green: 169.0 / 255.0, blue: 169.0 / 255.0)
 }
 
+public enum ClosingEvent {
+    case userGesture
+    case appLogic
+}
+
 public class CardEvents {
     public let topSpace = PassthroughSubject<CGFloat, Never>()
     public let contentOffset = PassthroughSubject<CGFloat, Never>()
-    public let cardDidClosed = PassthroughSubject<Void, Never>()
+    public let cardDidClosed = PassthroughSubject<ClosingEvent, Never>()
     
-    // INTERNAL:
+    // MARK: - INTERNAL -
     var showCardViewAction = PassthroughSubject<(view: AnyView, isBlocking: Bool, isFullScreen: Bool, openingHeight: CGFloat), Never>()
-    var closeCardAction = PassthroughSubject<Void, Never>()
+    var closeCardAction = PassthroughSubject<ClosingEvent, Never>()
 }
 
 public class BottomNavigationState: ObservableObject {
@@ -40,7 +45,7 @@ public class Card {
     }
     
     public func close() {
-        events.closeCardAction.send()
+        events.closeCardAction.send(.appLogic)
     }
 }
 

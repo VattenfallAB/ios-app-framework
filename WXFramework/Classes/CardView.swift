@@ -121,24 +121,8 @@ extension UIView {
     }
 }
 
-
-//public extension View {
-//    func cardType(isFixedHeight: Bool = true, isBlocking: Bool = false, isFullScreen: Bool = false, openingHeight: CGFloat = 100) -> CardType {
-//        if isFullScreen {
-//            return .any(view: AnyView(self), openedHeight: openedHeight)
-//        }
-//        return .blocking(view: AnyView(self))
-//    }
-//}
-
-
-
-
 class CardHolderViewController<Content>: UIViewController where Content: View {
-    
-//    @Binding var cardType: CardType
-//    var cardState: CardStatePassthroughSubject
-    
+
     private let hostingViewController: UIHostingController<Content>
     
     private var blockingCardScrollView: CardScrollView?
@@ -150,12 +134,8 @@ class CardHolderViewController<Content>: UIViewController where Content: View {
     let cards: Cards
     
     init(cards: Cards, rootView: Content) {
-        
         hostingViewController = UIHostingController(rootView: rootView)
-//        scrollView = nil
         self.rootView = rootView
-//        self._cardType = cardType
-//        self.cardState = cardState
         
         self.cards = cards
         
@@ -171,30 +151,30 @@ class CardHolderViewController<Content>: UIViewController where Content: View {
         cards.notClosableCard.events.showCardViewAction.sink(receiveValue: notClosableCard).store(in: &bag)
         
         cards.blockingCard.events.closeCardAction.sink(receiveValue: blockingCardDidClosed).store(in: &bag)
-        cards.normalCard.events.closeCardAction.sink(receiveValue: normalCarddDidClosed).store(in: &bag)
+        cards.normalCard.events.closeCardAction.sink(receiveValue: normalCardDidClosed).store(in: &bag)
         cards.notClosableCard.events.closeCardAction.sink(receiveValue: notClosableCardDidClosed).store(in: &bag)
     }
     
-    func blockingCardDidClosed() {
+    func blockingCardDidClosed(closingEvent: ClosingEvent) {
         blockingView?.removeFromSuperview()
         blockingView = nil
         blockingCardScrollView?.close {
-            self.cards.blockingCard.events.cardDidClosed.send()
+            self.cards.blockingCard.events.cardDidClosed.send(closingEvent)
         }
         blockingCardScrollView = nil
     }
     
-    func normalCarddDidClosed() {
+    func normalCardDidClosed(closingEvent: ClosingEvent) {
         normalCardScrollView?.close {
-            self.cards.normalCard.events.cardDidClosed.send()
+            self.cards.normalCard.events.cardDidClosed.send(closingEvent)
         }
         
         normalCardScrollView = nil
     }
     
-    func notClosableCardDidClosed() {
+    func notClosableCardDidClosed(closingEvent: ClosingEvent) {
         notClosableCardScrollView?.close {
-            self.cards.notClosableCard.events.cardDidClosed.send()
+            self.cards.notClosableCard.events.cardDidClosed.send(closingEvent)
         }
         notClosableCardScrollView = nil
     }
@@ -442,7 +422,7 @@ class UIKitCardView<Content>: UIScrollView, CardScrollView, UIScrollViewDelegate
     func cardWillEndDragging(with speed: CGFloat, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if outOfOffset() || abs(speed) > closingSpeed {
             close() {
-                self.card.events.closeCardAction.send()
+                self.card.events.closeCardAction.send(.userGesture)
             }
         } else {
             UIView.animate(withDuration: 0.3, delay: 0.0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
@@ -566,7 +546,7 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
                     self.card.events.topSpace.send(self.frame.origin.y - self.topSpace())
                 }
             }, completion: { finished in
-                self.card.events.cardDidClosed.send()
+                self.card.events.cardDidClosed.send(.userGesture)
                 self.removeFromSuperview()
             })
         } else if nextViewState == .middle || ((viewState == .fullScreen) && speed > closingSpeed) {
