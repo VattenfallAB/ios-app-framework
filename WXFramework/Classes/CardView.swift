@@ -611,7 +611,11 @@ class UIKitFullScreenCardView<Content>: UIKitCardView<Content> where Content: Vi
     }
 
     func topSpace() -> CGFloat {
-        return (self.superview?.superview?.superview?.safeAreaInsets.top ?? 0) + 65 - 21 + 10
+        let top = superview?.superview?.superview?.safeAreaInsets.top ?? 0
+        let bottomX = superview?.superview?.superview?.safeAreaInsets.bottom ?? 0
+        // TODO I do not know why i have to add 7 if no curvy screen
+        let bottom = bottomX == 0 ? 7 : bottomX
+        return top - bottom + 65 - 21 + 34 + 6
     }
 
     override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
