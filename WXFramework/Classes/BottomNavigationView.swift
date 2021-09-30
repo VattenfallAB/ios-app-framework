@@ -135,6 +135,7 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
         self.v5 = v5(TabBarItem(bottomNavigationState: bottomNavigationState, tabState: v5TabState))
         self.accentColor = accentColor
 
+        self.t1v = AnyView(self.v1.environment(\.tabState, self.v1TabState))
     }
     
     @ObservedObject var bottomNavigationState: BottomNavigationState
@@ -145,6 +146,7 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
     @ObservedObject var v4TabState: TabState
     @ObservedObject var v5TabState: TabState
     
+    var t1v: AnyView!
     
     public var body: some View {
         
@@ -154,7 +156,7 @@ public struct BottomNavigationView<T1, T2, T3, T4, T5>: View where T1: View, T2:
                         //Group {
                             
                             CardView(cards: self.v1TabState.cards) {
-                                self.v1.environment(\.tabState, self.v1TabState)
+                                t1v
                             }.zIndex(self.bottomNavigationState.selected == .t1 ? 1 : 0.5)
                             
                             CardView(cards: self.v2TabState.cards) {
